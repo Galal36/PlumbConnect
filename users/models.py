@@ -4,7 +4,8 @@ from django.utils import timezone
 
 
 class Location(models.Model):
-    city = models.CharField(max_length=100)
+    city = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.city
@@ -47,9 +48,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='client')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    image = models.ImageField(upload_to='plumber_images/', null=True, blank=True)
 
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)  # For login permissions only
+    is_staff = models.BooleanField(default=False) # For admin access to Django admin
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()
@@ -59,3 +61,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.name} ({self.phone})"
+
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+        ordering = ['-date_joined']
