@@ -46,6 +46,10 @@ INSTALLED_APPS = [
     'complaints',
     'chats',
     'articles',
+'comment',
+'comment_reply',
+'message',
+'location',
 ]
 
 MIDDLEWARE = [
