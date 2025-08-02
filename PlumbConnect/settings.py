@@ -46,9 +46,9 @@ INSTALLED_APPS = [
     'complaints',
     'chats',
     'articles',
-'comment',
-'comment_reply',
-'message',
+    'chat_messages',
+    'comments',
+    'comment_replys',
 ]
 
 MIDDLEWARE = [
@@ -89,7 +89,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'PlumbConnect.wsgi.application'
 
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
