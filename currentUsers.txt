@@ -16,3 +16,19 @@ Normal users:
 }
 
 
+
+plumber users:
+{
+  "name": "فهد السباك",
+  "email": "fahad.plumber@example.com",
+  "phone": "55123456",
+  "password": "plumber123",
+  "location_id": 1,
+  "role": "plumber"
+}
+{
+"name": "علي السباك",
+        "phone": "55123457",    
+        "role": "plumber",
+    }
+
