@@ -11,7 +11,7 @@ Normal users:
 {
  
     "phone": "01122334455",
-    "password": "clientpass123",
+    "password": "clientpass123"
    
 }
 
@@ -31,4 +31,8 @@ plumber users:
         "phone": "55123457",    
         "role": "plumber",
     }
+
+
+#refresh token for admin just for test:
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1NDI1NTU0NiwiaWF0IjoxNzU0MTY5MTQ2LCJqdGkiOiJiMjgwYjk1YjYxNmM0MTYxYjBiM2U2NmQ4MzdmNTVlMSIsInVzZXJfaWQiOiIxIiwibmFtZSI6IlN1cGVyIEFkbWluIiwicm9sZSI6ImFkbWluIn0.0jLBNrpg49PgAFucsPNo4JIjbawwX5RMXSDZXWkTjLY",
 
