@@ -1,0 +1,194 @@
+PlumbConnect API Guide: Users App
+This document provides a complete reference for the API endpoints related to the users app, including authentication, user management, and location management.
+
+1. Authentication
+Handles user login and token management using JWT.
+
+Get Authentication Token (Login)
+Logs in a user and returns an access and refresh token. The access token is used to authenticate subsequent requests. The user's role is included in the token payload.
+
+Method: POST
+
+Endpoint: /api/token/
+
+Permissions: Public (No authentication required)
+
+Request Body:
+[
+Super users:
+{
+
+"email":"alaa@gmail.com",
+"password":"admin123"
+
+}
+]
+
+Normal users:[
+Ahmed Alaa user
+{
+ 
+ "email": "client@example.com",
+ "password": "clientpass123"
+   
+}
+
+]
+
+plumber users:
+[
+{
+  "email": "fahad.plumber@example.com",
+  "password": "plumber123"
+
+
+}
+]
+
+Success Response (200 OK):
+
+{
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+Refresh Access Token
+Uses a valid refresh token to get a new access token.
+
+Method: POST
+
+Endpoint: /api/token/refresh/
+
+Permissions: Public
+
+Request Body:
+
+{
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+Success Response (200 OK):
+
+{
+  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+2. User Management
+Endpoints for creating, viewing, and managing user accounts.
+
+Register a New User
+Creates a new user account. This endpoint is public to allow anyone to register.
+
+Method: POST
+
+Endpoint: /api/users/
+
+Permissions: Public
+
+Request Body:
+
+The role can be "client" or "plumber". If omitted, it defaults to "client".
+
+The image field should only be provided if the role is "plumber". Use multipart/form-data instead of application/json if uploading an image.
+
+{
+  "name": "New Client",
+  "email": "client@example.com",
+  "phone": "98765432",
+  "password": "clientpassword",
+  "location_id": 1,
+  "role": "client"
+}
+
+Success Response (201 Created):
+
+{
+    "id": 4,
+    "name": "New Client",
+    "email": "client@example.com",
+    "phone": "98765432",
+    "location": {
+        "id": 1,
+        "city": "Kuwait City"
+    },
+    "role": "client",
+    "status": "active",
+    "image": null
+}
+
+List All Users
+Retrieves a list of all users.
+
+Method: GET
+
+Endpoint: /api/users/
+
+Permissions: Admin Only
+
+Retrieve a Specific User
+Gets the details of a single user by their ID.
+
+Method: GET
+
+Endpoint: /api/users/{id}/
+
+Permissions: Authenticated
+
+Update a User
+Updates a user's information. A user can update their own profile, and an admin can update any profile.
+
+Method: PUT or PATCH
+
+Endpoint: /api/users/{id}/
+
+Permissions: Owner or Admin
+
+Request Body:
+
+{
+  "name": "Updated Name",
+  "location_id": 2
+}
+
+Delete a User
+Deletes a user account.
+
+Method: DELETE
+
+Endpoint: /api/users/{id}/
+
+Permissions: Owner or Admin
+
+3. Location Management
+Endpoints for managing geographical locations (cities).
+
+Create a New Location
+Adds a new city to the database.
+
+Method: POST
+
+Endpoint: /api/locations/
+
+Permissions: Authenticated
+
+Request Body:
+
+{
+  "city": "Hawally"
+}
+
+Success Response (201 Created):
+
+{
+    "id": 2,
+    "city": "Hawally"
+}
+
+List All Locations
+Retrieves a list of all available locations.
+
+Method: GET
+
+Endpoint: /api/locations/
+
+Permissions: Authenticated

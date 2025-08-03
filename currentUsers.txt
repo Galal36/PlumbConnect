@@ -2,16 +2,23 @@ Super users:
 {
   "phone": "1234567890",
   "password": "admin123"
-}
-
-..........................
-Normal users:
+}#old, not updated
 
 
 {
+
+"email":"alaa@gmail.com",
+"password":"admin123"
+
+}
+
+........................................................................................................
+Normal users:
+Ahmed Alaa user
+{
  
-    "phone": "01122334455",
-    "password": "clientpass123"
+ "email": "client@example.com",
+ "password": "clientpass123"
    
 }
 
@@ -19,20 +26,11 @@ Normal users:
 
 plumber users:
 {
-  "name": "فهد السباك",
   "email": "fahad.plumber@example.com",
-  "phone": "55123456",
-  "password": "plumber123",
-  "location_id": 1,
-  "role": "plumber"
+  "password": "plumber123"
+
+
 }
-{
-"name": "علي السباك",
-        "phone": "55123457",    
-        "role": "plumber",
-    }
 
 
-#refresh token for admin just for test:
-    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1NDI1NTU0NiwiaWF0IjoxNzU0MTY5MTQ2LCJqdGkiOiJiMjgwYjk1YjYxNmM0MTYxYjBiM2U2NmQ4MzdmNTVlMSIsInVzZXJfaWQiOiIxIiwibmFtZSI6IlN1cGVyIEFkbWluIiwicm9sZSI6ImFkbWluIn0.0jLBNrpg49PgAFucsPNo4JIjbawwX5RMXSDZXWkTjLY",
 
