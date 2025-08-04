@@ -24,4 +24,6 @@ urlpatterns = [
     path('api/', include('users.urls')),  # المسارات الخاصة بالمستخدمين
     path('api/articles/', include('articles.urls')),
     path('api/', include('posts.urls')),
+    path('api/reviews/', include('reviews.api.urls')),
+
 ]
