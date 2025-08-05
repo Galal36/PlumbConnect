@@ -1,0 +1,134 @@
+# PlumbingConnect API - Complaints App Examples for Postman
+
+# Base URL: http://localhost:8000/api/v1/complaints/
+# Headers for all requests:
+# Authorization: Bearer <YOUR_JWT_TOKEN>
+# Content-Type: application/json (for POST/PUT/PATCH)
+# Accept-Language: ar (Optional, for Arabic responses)
+
+---
+
+# 1. Get My Complaints (عرض الشكاوى التي قدمتها)
+# Description: Retrieve a list of complaints filed by the authenticated user.
+# Method: GET
+# URL: http://localhost:8000/api/v1/complaints/my-complaints/
+# Query Params:
+#   status: pending/in_progress/resolved/rejected (Optional, to filter by status)
+#   complaint_type: user_behavior/service_quality/payment_issue/spam/other (Optional, to filter by type)
+# Example Response (Status: 200 OK):
+# [
+#     {
+#         "id": 1,
+#         "title": "تأخير في الموعد",
+#         "description": "السباك تأخر ساعتين عن الموعد المحدد بدون إشعار مسبق",
+#         "complaint_type": "service_quality",
+#         "from_user": 1,
+#         "to_user": 2,
+#         "status": "pending",
+#         "created_at": "2023-10-27T11:00:00Z",
+#         "updated_at": "2023-10-27T11:00:00Z",
+#         "resolved_by": null,
+#         "admin_notes": "",
+#         "from_user_name": "customer1",
+#         "to_user_name": "plumber1",
+#         "resolved_by_name": null
+#     }
+# ]
+
+---
+
+# 2. Create a New Complaint (تقديم شكوى جديدة)
+# Description: File a new complaint against another user.
+# Method: POST
+# URL: http://localhost:8000/api/v1/complaints/
+# Request Body (JSON):
+# {
+#     "title": "سلوك غير لائق",
+#     "description": "المستخدم قام بإرسال رسائل غير لائقة.",
+#     "complaint_type": "user_behavior",
+#     "to_user_id": 2 # ID of the user you are complaining about
+# }
+# Example Response (Status: 201 Created):
+# {
+#     "id": 2,
+#     "title": "سلوك غير لائق",
+#     "description": "المستخدم قام بإرسال رسائل غير لائقة.",
+#     "complaint_type": "user_behavior",
+#     "from_user": 1,
+#     "to_user": 2,
+#     "status": "pending",
+#     "created_at": "2023-10-27T11:30:00Z",
+#     "updated_at": "2023-10-27T11:30:00Z",
+#     "resolved_by": null,
+#     "admin_notes": "",
+#     "from_user_name": "customer1",
+#     "to_user_name": "plumber1",
+#     "resolved_by_name": null
+# }
+
+---
+
+# 3. Get Complaint Detail (عرض تفاصيل شكوى معينة)
+# Description: Retrieve details of a specific complaint by its ID.
+# Method: GET
+# URL: http://localhost:8000/api/v1/complaints/1/ (Replace 1 with the actual complaint ID)
+# Example Response (Status: 200 OK):
+# {
+#     "id": 1,
+#     "title": "تأخير في الموعد",
+#     "description": "السباك تأخر ساعتين عن الموعد المحدد بدون إشعار مسبق",
+#     "complaint_type": "service_quality",
+#     "from_user": 1,
+#     "to_user": 2,
+#     "status": "pending",
+#     "created_at": "2023-10-27T11:00:00Z",
+#     "updated_at": "2023-10-27T11:00:00Z",
+#     "resolved_by": null,
+#     "admin_notes": "",
+#     "from_user_name": "customer1",
+#     "to_user_name": "plumber1",
+#     "resolved_by_name": null
+# }
+
+---
+
+# 4. Resolve a Complaint (حل شكوى) - (Admin/Moderator Only)
+# Description: Mark a complaint as 'resolved'. Only Admin/Moderator users can perform this action.
+# Method: POST
+# URL: http://localhost:8000/api/v1/complaints/1/resolve/ (Replace 1 with the actual complaint ID)
+# Request Body (JSON):
+# {
+#     "admin_notes": "تم التواصل مع السباك وحل المشكلة." # Optional notes from admin/moderator
+# }
+# Example Response (Status: 200 OK):
+# {
+#     "id": 1,
+#     "title": "تأخير في الموعد",
+#     "description": "السباك تأخر ساعتين عن الموعد المحدد بدون إشعار مسبق",
+#     "complaint_type": "service_quality",
+#     "from_user": 1,
+#     "to_user": 2,
+#     "status": "resolved", # Status is now resolved
+#     "created_at": "2023-10-27T11:00:00Z",
+#     "updated_at": "2023-10-27T12:00:00Z",
+#     "resolved_by": 3, # ID of the admin/moderator who resolved it
+#     "admin_notes": "تم التواصل مع السباك وحل المشكلة.",
+#     "from_user_name": "customer1",
+#     "to_user_name": "plumber1",
+#     "resolved_by_name": "admin"
+# }
+
+---
+
+# 5. Get Complaint Statistics (الحصول على إحصائيات الشكاوى) - (Admin/Moderator Only)
+# Description: Get statistics about complaints (total, pending, in progress, resolved, rejected).
+# Method: GET
+# URL: http://localhost:8000/api/v1/complaints/statistics/
+# Example Response (Status: 200 OK):
+# {
+#     "total": 10,
+#     "pending": 3,
+#     "in_progress": 2,
+#     "resolved": 4,
+#     "rejected": 1
+# }

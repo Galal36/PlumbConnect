@@ -1,0 +1,133 @@
+# PlumbingConnect API - Chat Messages App Examples for Postman
+
+# Base URL: http://localhost:8000/api/v1/messages/
+# Headers for all requests:
+# Authorization: Bearer <YOUR_JWT_TOKEN>
+# Content-Type: application/json (for POST/PUT/PATCH)
+# Accept-Language: ar (Optional, for Arabic responses)
+
+---
+
+# 1. Get Messages by Chat ID (عرض رسائل محادثة معينة)
+# Description: Retrieve messages for a specific chat.
+# Method: GET
+# URL: http://localhost:8000/api/v1/messages/chat/1/ (Replace 1 with the actual chat ID)
+# Query Params:
+#   page: 1 (Optional, for pagination)
+#   page_size: 20 (Optional, for pagination)
+#   message_type: text/image/system (Optional, to filter by message type)
+# Example Response (Status: 200 OK):
+# [
+#     {
+#         "id": 1,
+#         "message": "مرحبا، أحتاج إلى سباك لإصلاح مشكلة في الحمام",
+#         "image": null,
+#         "message_type": "text",
+#         "chat": 1,
+#         "sender": 1,
+#         "receiver": 2,
+#         "sent_at": "2023-10-27T10:00:00Z",
+#         "is_read": false,
+#         "sender_name": "customer1",
+#         "receiver_name": "plumber1"
+#     },
+#     {
+#         "id": 2,
+#         "message": "أهلا وسهلا، يمكنني المساعدة. ما هي المشكلة بالتحديد؟",
+#         "image": null,
+#         "message_type": "text",
+#         "chat": 1,
+#         "sender": 2,
+#         "receiver": 1,
+#         "sent_at": "2023-10-27T10:05:00Z",
+#         "is_read": false,
+#         "sender_name": "plumber1",
+#         "receiver_name": "customer1"
+#     }
+# ]
+
+---
+
+# 2. Send a New Message (إرسال رسالة جديدة)
+# Description: Send a new message within an existing chat.
+# Method: POST
+# URL: http://localhost:8000/api/v1/messages/
+# Request Body (JSON):
+# {
+#     "chat_id": 1, # ID of the chat the message belongs to
+#     "message": "تمام، سأرسل لك موقعي الآن.",
+#     "message_type": "text" # Optional, default is 'text'
+#     # "image": "base64_encoded_image_data" # For image messages, send as multipart/form-data
+# }
+# Example Response (Status: 201 Created):
+# {
+#     "id": 3,
+#     "message": "تمام، سأرسل لك موقعي الآن.",
+#     "image": null,
+#     "message_type": "text",
+#     "chat": 1,
+#     "sender": 1,
+#     "receiver": 2,
+#     "sent_at": "2023-10-27T10:10:00Z",
+#     "is_read": false,
+#     "sender_name": "customer1",
+#     "receiver_name": "plumber1"
+# }
+
+---
+
+# 3. Mark Message as Read (تحديد رسالة كمقروءة)
+# Description: Mark a specific message as read. Only the receiver can mark a message as read.
+# Method: POST
+# URL: http://localhost:8000/api/v1/messages/1/mark-as-read/ (Replace 1 with the actual message ID)
+# Request Body: (Empty or {})
+# Example Response (Status: 200 OK):
+# {
+#     "status": "message marked as read"
+# }
+
+---
+
+# 4. Soft Delete a Message (حذف رسالة بشكل مؤقت)
+# Description: Mark a message as deleted (it won't be shown in lists but remains in DB). Only the sender can soft delete their own message.
+# Method: DELETE
+# URL: http://localhost:8000/api/v1/messages/1/soft-delete/ (Replace 1 with the actual message ID)
+# Request Body: (Empty or {})
+# Example Response (Status: 200 OK):
+# {
+#     "status": "message deleted"
+# }
+
+---
+
+# 5. Get Unread Messages Count (الحصول على عدد الرسائل غير المقروءة)
+# Description: Get the total count of unread messages for the authenticated user.
+# Method: GET
+# URL: http://localhost:8000/api/v1/messages/unread-count/
+# Example Response (Status: 200 OK):
+# {
+#     "unread_count": 5
+# }
+
+---
+
+# 6. Get Unread Messages (عرض الرسائل غير المقروءة)
+# Description: Retrieve a list of all unread messages for the authenticated user.
+# Method: GET
+# URL: http://localhost:8000/api/v1/messages/unread/
+# Example Response (Status: 200 OK):
+# [
+#     {
+#         "id": 1,
+#         "message": "رسالة جديدة",
+#         "image": null,
+#         "message_type": "text",
+#         "chat": 1,
+#         "sender": 2,
+#         "receiver": 1,
+#         "sent_at": "2023-10-27T10:05:00Z",
+#         "is_read": false,
+#         "sender_name": "plumber1",
+#         "receiver_name": "customer1"
+#     }
+# ]
