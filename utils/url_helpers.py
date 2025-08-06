@@ -1,53 +1,29 @@
 from django.urls import reverse
-from django.conf import settings
+from .url_patterns import get_url_pattern
 
-def get_api_url(view_name, *args, **kwargs):
-    """
-    مساعد لإنشاء URLs للـ API
-    """
-    return reverse(f'api:v1:{view_name}', args=args, kwargs=kwargs)
 
-def get_full_api_url(request, view_name, *args, **kwargs):
+def get_full_api_url(request, url_name, *args, **kwargs):
     """
-    مساعد لإنشاء URLs كاملة للـ API
+    Generate full API URL based on request and URL name with optional arguments
     """
-    url = get_api_url(view_name, *args, **kwargs)
-    return request.build_absolute_uri(url)
+    if not request:
+        return None
 
-# قائمة بجميع URLs المتاحة في النظام
-API_ENDPOINTS = {
-    'authentication': {
-        'login': 'accounts:login',
-        'register': 'accounts:register',
-        'refresh': 'accounts:refresh-token',
-        'logout': 'accounts:logout',
-    },
-    'chats': {
-        'list': 'chats:chat-list',
-        'create': 'chats:chat-list',
-        'detail': 'chats:chat-detail',
-        'my_chats': 'chats:my-chats',
-        'active': 'chats:active-chats',
-        'archived': 'chats:archived-chats',
-    },
-    'messages': {
-        'list': 'chat_messages:message-list',
-        'create': 'chat_messages:message-list',
-        'detail': 'chat_messages:message-detail',
-        'by_chat': 'chat_messages:messages-by-chat',
-        'unread_count': 'chat_messages:unread-count',
-    },
-    'complaints': {
-        'list': 'complaints:complaint-list',
-        'create': 'complaints:complaint-list',
-        'detail': 'complaints:complaint-detail',
-        'my_complaints': 'complaints:my-complaints',
-        'statistics': 'complaints:statistics',
-    },
-    'notifications': {
-        'list': 'notifications:notification-list',
-        'unread': 'notifications:unread',
-        'unread_count': 'notifications:unread-count',
-        'mark_all_read': 'notifications:mark-all-as-read',
-    }
-}
+    # Get the base URL (e.g., http://localhost:8000)
+    base_url = request.build_absolute_uri('/')
+
+    # Get the URL pattern from url_patterns.py
+    url_pattern = get_url_pattern(kwargs.get('app_name', ''), url_name, **kwargs)
+
+    # If no pattern is found, try to reverse the URL name directly
+    if not url_pattern:
+        try:
+            url_pattern = reverse(url_name, args=args, kwargs=kwargs)
+        except:
+            return None
+
+    # Combine base URL with the URL pattern
+    full_url = f"{base_url.rstrip('/')}/{url_pattern.lstrip('/')}"
+    return full_url
+
+

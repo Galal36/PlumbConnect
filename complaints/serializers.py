@@ -2,12 +2,20 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Complaint
 from chats.models import Chat
+from notifications.models import Notification
 from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
+class UserBasicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'role', 'image', 'is_verified']
 
 class ComplaintSerializer(serializers.ModelSerializer):
+    from_user = UserBasicSerializer(read_only=True)
+    to_user = UserBasicSerializer(read_only=True)
+    resolved_by = UserBasicSerializer(read_only=True, allow_null=True)
     from_user_name = serializers.CharField(source='from_user.name', read_only=True)
     to_user_name = serializers.CharField(source='to_user.name', read_only=True)
     resolved_by_name = serializers.SerializerMethodField()
@@ -22,7 +30,6 @@ class ComplaintSerializer(serializers.ModelSerializer):
 
     def get_resolved_by_name(self, obj):
         return obj.resolved_by.name if obj.resolved_by else None
-
 
 class ComplaintCreateSerializer(serializers.ModelSerializer):
     to_user_id = serializers.IntegerField(write_only=True)
@@ -76,15 +83,18 @@ class ComplaintCreateSerializer(serializers.ModelSerializer):
             **validated_data
         )
 
-        from notifications.models import Notification
         Notification.objects.create(
             user=to_user,
-            message=_("شكوى جديدة من %(name)s") % {'name': from_user.name},
-            type='new_complaint'
+            title=_("شكوى جديدة"),
+            content=_("شكوى جديدة من %(name)s") % {'name': from_user.name},
+            notification_type='complaint_status',
+            is_important=True,
+            action_url=f"http://localhost:8000/api/complaints/{complaint.id}/",
+            content_type="complaints.complaint",
+            object_id=complaint.id
         )
 
         return complaint
-
 
 class ComplaintUpdateSerializer(serializers.ModelSerializer):
     class Meta:

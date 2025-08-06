@@ -1,9 +1,10 @@
+```
 # PlumbingConnect API - Chats App Examples for Postman
 
-# Base URL: http://localhost:8000/api/v1/chats/
+# Base URL: http://localhost:8000/api/chats/
 # Headers for all requests:
 # Authorization: Bearer <YOUR_JWT_TOKEN>
-# Content-Type: application/json (for POST/PUT/PATCH)
+# Content-Type: application/json (for POST/PATCH)
 # Accept-Language: ar (Optional, for Arabic responses)
 
 ---
@@ -11,7 +12,7 @@
 # 1. Get My Chats (عرض جميع محادثاتي)
 # Description: Retrieve a list of all chats the authenticated user is part of.
 # Method: GET
-# URL: http://localhost:8000/api/v1/chats/my-chats/
+# URL: http://localhost:8000/api/chats/
 # Query Params:
 #   page: 1 (Optional, for pagination)
 #   page_size: 20 (Optional, for pagination)
@@ -20,12 +21,12 @@
 # [
 #     {
 #         "id": 1,
-#         "sender": { "id": 1, "username": "customer1", "user_type": "customer", "profile_image": null, "is_verified": false },
-#         "receiver": { "id": 2, "username": "plumber1", "user_type": "plumber", "profile_image": null, "is_verified": true },
-#         "created_at": "2023-10-27T10:00:00Z",
-#         "updated_at": "2023-10-27T10:30:00Z",
+#         "sender": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#         "receiver": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#         "created_at": "2025-08-05T21:00:00Z",
+#         "updated_at": "2025-08-05T21:30:00Z",
 #         "is_active": true,
-#         "last_message": { "id": 1, "message": "مرحبا، أحتاج إلى سباك...", "sent_at": "2023-10-27T10:30:00Z", "is_read": false, "message_type": "text" },
+#         "last_message": { "id": 1, "message": "مرحبا، أحتاج إلى سباك...", "sent_at": "2025-08-05T21:30:00Z", "is_read": false, "message_type": "text", "link": null },
 #         "unread_count": 1
 #     }
 # ]
@@ -35,18 +36,19 @@
 # 2. Create a New Chat (إنشاء محادثة جديدة)
 # Description: Start a new chat with another user. If a chat already exists, it will be returned.
 # Method: POST
-# URL: http://localhost:8000/api/v1/chats/
+# URL: http://localhost:8000/api/chats/
 # Request Body (JSON):
 # {
-#     "receiver_id": 2 # ID of the user you want to chat with
+#     "receiver_id": 2,
+#     "is_admin_created": false
 # }
 # Example Response (Status: 201 Created or 200 OK if chat exists):
 # {
 #     "id": 1,
-#     "sender": { "id": 1, "username": "customer1", "user_type": "customer", "profile_image": null, "is_verified": false },
-#     "receiver": { "id": 2, "username": "plumber1", "user_type": "plumber", "profile_image": null, "is_verified": true },
-#     "created_at": "2023-10-27T10:00:00Z",
-#     "updated_at": "2023-10-27T10:00:00Z",
+#     "sender": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#     "receiver": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#     "created_at": "2025-08-05T21:00:00Z",
+#     "updated_at": "2025-08-05T21:00:00Z",
 #     "is_active": true,
 #     "last_message": null,
 #     "unread_count": 0
@@ -57,38 +59,25 @@
 # 3. Get Chat Detail (عرض تفاصيل محادثة معينة)
 # Description: Retrieve details of a specific chat by its ID.
 # Method: GET
-# URL: http://localhost:8000/api/v1/chats/1/ (Replace 1 with the actual chat ID)
+# URL: http://localhost:8000/api/chats/1/
 # Example Response (Status: 200 OK):
 # {
 #     "id": 1,
-#     "sender": { "id": 1, "username": "customer1", "user_type": "customer", "profile_image": null, "is_verified": false },
-#     "receiver": { "id": 2, "username": "plumber1", "user_type": "plumber", "profile_image": null, "is_verified": true },
-#     "created_at": "2023-10-27T10:00:00Z",
-#     "updated_at": "2023-10-27T10:30:00Z",
+#     "sender": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#     "receiver": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#     "created_at": "2025-08-05T21:00:00Z",
+#     "updated_at": "2025-08-05T21:30:00Z",
 #     "is_active": true,
-#     "last_message": { "id": 1, "message": "مرحبا، أحتاج إلى سباك...", "sent_at": "2023-10-27T10:30:00Z", "is_read": false, "message_type": "text" },
+#     "last_message": { "id": 1, "message": "مرحبا، أحتاج إلى سباك...", "sent_at": "2025-08-05T21:30:00Z", "is_read": false, "message_type": "text", "link": null },
 #     "unread_count": 1
 # }
 
 ---
 
-# 4. Mark Chat Messages as Read (تحديد جميع رسائل المحادثة كمقروءة)
-# Description: Mark all messages in a specific chat (where the authenticated user is the receiver) as read.
-# Method: POST
-# URL: http://localhost:8000/api/v1/chats/1/mark-as-read/ (Replace 1 with the actual chat ID)
-# Request Body: (Empty or {})
-# Example Response (Status: 200 OK):
-# {
-#     "status": "messages marked as read",
-#     "updated_count": 3 # Number of messages marked as read
-# }
-
----
-
-# 5. Archive/Unarchive Chat (أرشفة/إلغاء أرشفة المحادثة)
+# 4. Archive/Unarchive Chat (أرشفة/إلغاء أرشفة المحادثة)
 # Description: Toggle the 'is_active' status of a chat.
-# Method: POST
-# URL: http://localhost:8000/api/v1/chats/1/archive/ (Replace 1 with the actual chat ID)
+# Method: PATCH
+# URL: http://localhost:8000/api/chats/1/archive/
 # Request Body: (Empty or {})
 # Example Response (Status: 200 OK):
 # {
@@ -101,20 +90,32 @@
 
 ---
 
-# 6. Search Chats (البحث في المحادثات)
-# Description: Search chats by sender/receiver username or message content.
+# 5. Search Chats (البحث في المحادثات)
+# Description: Search chats by sender/receiver name or message content.
 # Method: GET
-# URL: http://localhost:8000/api/v1/chats/search/?q=plumber1 (Replace plumber1 with your search query)
+# URL: http://localhost:8000/api/chats/search/?q=علي
 # Example Response (Status: 200 OK):
 # [
 #     {
 #         "id": 1,
-#         "sender": { "id": 1, "username": "customer1", "user_type": "customer", "profile_image": null, "is_verified": false },
-#         "receiver": { "id": 2, "username": "plumber1", "user_type": "plumber", "profile_image": null, "is_verified": true },
-#         "created_at": "2023-10-27T10:00:00Z",
-#         "updated_at": "2023-10-27T10:30:00Z",
+#         "sender": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#         "receiver": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#         "created_at": "2025-08-05T21:00:00Z",
+#         "updated_at": "2025-08-05T21:30:00Z",
 #         "is_active": true,
-#         "last_message": { "id": 1, "message": "مرحبا، أحتاج إلى سباك...", "sent_at": "2023-10-27T10:30:00Z", "is_read": false, "message_type": "text" },
+#         "last_message": { "id": 1, "message": "مرحبا، أحتاج إلى سباك...", "sent_at": "2025-08-05T21:30:00Z", "is_read": false, "message_type": "text", "link": null },
 #         "unread_count": 1
 #     }
 # ]
+
+---
+
+# 6. Get Chat Count (عدد المحادثات)
+# Description: Get the total count of chats for the authenticated user.
+# Method: GET
+# URL: http://localhost:8000/api/chats/count/
+# Example Response (Status: 200 OK):
+# {
+#     "total_chats_count": 5
+# }
+```

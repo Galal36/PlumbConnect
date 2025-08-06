@@ -1,37 +1,30 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
+from django.db.models import Q
 from .models import Chat
-from .serializers import ChatSerializer, ChatCreateSerializer
-from django.contrib.auth import get_user_model
+from .serializers import ChatSerializer, ChatCreateSerializer, ChatUpdateSerializer
 from users.permissions import IsAdmin
+from django.utils.translation import gettext_lazy as _
+from notifications.notification_helpers import notify_new_chat
 
-User = get_user_model()
-
-# إذن مخصص للسماح للمدير أو أطراف المحادثة
 class IsAdminOrChatParticipant(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user.role == 'admin' or request.user in [obj.sender, obj.receiver]
 
-# Base queryset for chats accessible by the user
 class BaseChatQuerysetMixin:
     def get_queryset(self):
         user = self.request.user
-        if user.role == 'admin':
-            return Chat.objects.all().select_related('sender', 'receiver').prefetch_related('messages')
         return Chat.objects.filter(
             Q(sender=user) | Q(receiver=user)
-        ).select_related('sender', 'receiver').prefetch_related('messages')
+        ).select_related('sender', 'receiver')
 
-# 1. ChatListCreateView: لعرض وإنشاء المحادثات
 class ChatListCreateView(BaseChatQuerysetMixin, generics.ListCreateAPIView):
     serializer_class = ChatSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['is_active']
-    search_fields = ['sender__name', 'receiver__name']
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['is_active', 'is_archived']
     ordering_fields = ['created_at', 'updated_at']
     ordering = ['-updated_at']
 
@@ -40,55 +33,48 @@ class ChatListCreateView(BaseChatQuerysetMixin, generics.ListCreateAPIView):
             return ChatCreateSerializer
         return ChatSerializer
 
-# 2. ChatDetailView: لعرض تفاصيل محادثة واحدة
+    def perform_create(self, serializer):
+        chat = serializer.save(sender=self.request.user)
+        notify_new_chat(chat.receiver, chat, request=self.request)
+
 class ChatDetailView(BaseChatQuerysetMixin, generics.RetrieveAPIView):
     serializer_class = ChatSerializer
     permission_classes = [IsAdminOrChatParticipant]
 
-# 3. ChatUpdateView: لتحديث محادثة (مثلاً is_active)
 class ChatUpdateView(BaseChatQuerysetMixin, generics.UpdateAPIView):
-    serializer_class = ChatSerializer
+    serializer_class = ChatUpdateSerializer
     permission_classes = [IsAdminOrChatParticipant]
 
-# 4. ChatDeleteView: لحذف محادثة (Hard Delete)
 class ChatDeleteView(BaseChatQuerysetMixin, generics.DestroyAPIView):
     serializer_class = ChatSerializer
     permission_classes = [IsAdminOrChatParticipant]
 
-# 5. MyChatListView: لعرض جميع محادثات المستخدم الحالي
 class MyChatListView(BaseChatQuerysetMixin, generics.ListAPIView):
     serializer_class = ChatSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['is_active']
-    search_fields = ['sender__name', 'receiver__name']
-    ordering_fields = ['created_at', 'updated_at']
-    ordering = ['-updated_at']
-
-# 6. ActiveChatsView: لعرض المحادثات النشطة فقط
-class ActiveChatsView(BaseChatQuerysetMixin, generics.ListAPIView):
-    serializer_class = ChatSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    ordering = ['-updated_at']
 
     def get_queryset(self):
         return super().get_queryset().filter(is_active=True)
 
-# 7. ArchivedChatsView: لعرض المحادثات المؤرشفة
+class ActiveChatsView(BaseChatQuerysetMixin, generics.ListAPIView):
+    serializer_class = ChatSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True, is_archived=False)
+
 class ArchivedChatsView(BaseChatQuerysetMixin, generics.ListAPIView):
     serializer_class = ChatSerializer
     permission_classes = [permissions.IsAuthenticated]
-    ordering = ['-updated_at']
 
     def get_queryset(self):
-        return super().get_queryset().filter(is_active=False)
+        return super().get_queryset().filter(is_archived=True)
 
-# 8. SearchChatsView: للبحث في المحادثات
 class SearchChatsView(BaseChatQuerysetMixin, generics.ListAPIView):
     serializer_class = ChatSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ['sender__name', 'receiver__name', 'messages__message']
+    search_fields = ['sender__name', 'receiver__name']
     ordering_fields = ['created_at', 'updated_at']
     ordering = ['-updated_at']
 
@@ -97,107 +83,68 @@ class SearchChatsView(BaseChatQuerysetMixin, generics.ListAPIView):
         query = self.request.query_params.get('q', '')
         if query:
             queryset = queryset.filter(
-                Q(sender__name__icontains=query) |
-                Q(receiver__name__icontains=query) |
-                Q(messages__message__icontains=query)
-            ).distinct()
+                Q(sender__name__icontains=query) | Q(receiver__name__icontains=query)
+            )
         return queryset
 
-# 9. MarkChatAsReadView: لتحديد جميع رسائل المحادثة كمقروءة
-class MarkChatAsReadView(generics.UpdateAPIView):
-    serializer_class = ChatSerializer
-    permission_classes = [IsAdminOrChatParticipant]
-
-    def get_object(self):
-        chat_id = self.kwargs['pk']
-        user = self.request.user
-        try:
-            chat = Chat.objects.get(id=chat_id)
-            if user not in [chat.sender, chat.receiver] and user.role != 'admin':
-                raise permissions.PermissionDenied("You do not have permission to access this chat.")
-            return chat
-        except Chat.DoesNotExist:
-            raise status.HTTP_404_NOT_FOUND
-
-    def update(self, request, *args, **kwargs):
-        chat = self.get_object()
-        user = request.user
-
-        updated_count = chat.messages.filter(
-            receiver=user,
-            is_read=False
-        ).update(is_read=True)
-
-        return Response({
-            'status': 'messages marked as read',
-            'updated_count': updated_count
-        }, status=status.HTTP_200_OK)
-
-# 10. ArchiveChatView: لأرشفة المحادثة
-class ArchiveChatView(generics.UpdateAPIView):
-    serializer_class = ChatSerializer
-    permission_classes = [IsAdminOrChatParticipant]
-
-    def get_object(self):
-        chat_id = self.kwargs['pk']
-        user = self.request.user
-        try:
-            chat = Chat.objects.get(id=chat_id)
-            if user not in [chat.sender, chat.receiver] and user.role != 'admin':
-                raise permissions.PermissionDenied("You do not have permission to access this chat.")
-            return chat
-        except Chat.DoesNotExist:
-            raise status.HTTP_404_NOT_FOUND
-
-    def update(self, request, *args, **kwargs):
-        chat = self.get_object()
-        chat.is_active = False
-        chat.save()
-        return Response({'status': 'chat archived'}, status=status.HTTP_200_OK)
-
-# 11. UnarchiveChatView: لإلغاء أرشفة المحادثة
-class UnarchiveChatView(generics.UpdateAPIView):
-    serializer_class = ChatSerializer
-    permission_classes = [IsAdminOrChatParticipant]
-
-    def get_object(self):
-        chat_id = self.kwargs['pk']
-        user = self.request.user
-        try:
-            chat = Chat.objects.get(id=chat_id)
-            if user not in [chat.sender, chat.receiver] and user.role != 'admin':
-                raise permissions.PermissionDenied("You do not have permission to access this chat.")
-            return chat
-        except Chat.DoesNotExist:
-            raise status.HTTP_404_NOT_FOUND
-
-    def update(self, request, *args, **kwargs):
-        chat = self.get_object()
-        chat.is_active = True
-        chat.save()
-        return Response({'status': 'chat unarchived'}, status=status.HTTP_200_OK)
-
-# 12. ChatWithUserView: للحصول على محادثة مع مستخدم معين
-class ChatWithUserView(BaseChatQuerysetMixin, generics.RetrieveAPIView):
+class MarkChatAsReadView(BaseChatQuerysetMixin, generics.UpdateAPIView):
     serializer_class = ChatSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_object(self):
-        user_id = self.kwargs['user_id']
-        current_user = self.request.user
-        try:
-            other_user = User.objects.get(id=user_id)
-            chat = Chat.objects.filter(
-                Q(sender=current_user, receiver=other_user) |
-                Q(sender=other_user, receiver=current_user)
-            ).first()
-            if not chat:
-                raise status.HTTP_404_NOT_FOUND
-            return chat
-        except User.DoesNotExist:
-            raise status.HTTP_404_NOT_FOUND
+    def update(self, request, *args, **kwargs):
+        chat = self.get_object()
+        if request.user in [chat.sender, chat.receiver]:
+            messages = chat.messages.filter(receiver=request.user, is_read=False, is_deleted=False)
+            updated_count = messages.update(is_read=True)
+            return Response({'status': _('chat marked as read'), 'updated_count': updated_count},
+                           status=status.HTTP_200_OK)
+        return Response({'error': _('You can only mark your own chats as read')},
+                       status=status.HTTP_403_FORBIDDEN)
 
-# 13. ChatCountView: لعد إجمالي المحادثات للمستخدم
+class ArchiveChatView(BaseChatQuerysetMixin, generics.UpdateAPIView):
+    serializer_class = ChatSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        chat = self.get_object()
+        if request.user in [chat.sender, chat.receiver]:
+            chat.is_archived = True
+            chat.save()
+            serializer = self.get_serializer(chat)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'error': _('You can only archive your own chats')},
+                       status=status.HTTP_403_FORBIDDEN)
+
+class UnarchiveChatView(BaseChatQuerysetMixin, generics.UpdateAPIView):
+    serializer_class = ChatSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        chat = self.get_object()
+        if request.user in [chat.sender, chat.receiver]:
+            chat.is_archived = False
+            chat.save()
+            serializer = self.get_serializer(chat)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'error': _('You can only unarchive your own chats')},
+                       status=status.HTTP_403_FORBIDDEN)
+
+class ChatWithUserView(generics.CreateAPIView):
+    serializer_class = ChatCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        user_id = self.kwargs['user_id']
+        try:
+            receiver = User.objects.get(id=user_id)
+            if receiver == self.request.user:
+                return Response({'error': _('Cannot create chat with yourself')},
+                               status=status.HTTP_400_BAD_REQUEST)
+            serializer.save(sender=self.request.user, receiver=receiver)
+            notify_new_chat(receiver, serializer.instance, request=self.request)
+        except User.DoesNotExist:
+            return Response({'error': _('User not found')}, status=status.HTTP_404_NOT_FOUND)
+
 class ChatCountView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -208,7 +155,10 @@ class ChatCountView(generics.RetrieveAPIView):
         ).count()
         return Response({'total_chats_count': count}, status=status.HTTP_200_OK)
 
-# 14. AdminCreateChatView: لإنشاء محادثة بواسطة المدير
 class AdminCreateChatView(generics.CreateAPIView):
     serializer_class = ChatCreateSerializer
     permission_classes = [IsAdmin]
+
+    def perform_create(self, serializer):
+        chat = serializer.save(sender=self.request.user, is_admin_created=True)
+        notify_new_chat(chat.receiver, chat, request=self.request)

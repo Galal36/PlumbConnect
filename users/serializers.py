@@ -1,6 +1,21 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User, Location
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+from .models import User  
+
+
+# --- Imports for Email Sending ---
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from .tokens import account_activation_token
+from django.conf import settings
+# ---------------------------------
+
+
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,7 +40,8 @@ class UserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},
             'email': {'required': False, 'allow_null': True, 'allow_blank': True},
             'name': {'required': True},
-            'image': {'required': False} # The image is not always required,
+            'image': {'required': False}, # The image is not always required,
+            'status': {'read_only': True}, # Status should not be set by user
 
         }
 
@@ -51,11 +67,43 @@ class UserSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        password = validated_data.pop('password')
-        user = User(**validated_data)
-        user.set_password(password)
-        user.save()
-        return user
+            # Create the user with status='inactive'
+            user = User.objects.create_user(**validated_data)
+            user.set_password(validated_data['password'])
+            user.save()
+
+            # --- Send Confirmation Email ---
+            token = account_activation_token.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            
+            # This will be the link in the email.
+            # You will need to replace 'your-frontend-domain.com' with your actual frontend URL.
+            activation_link = f"http://your-frontend-domain.com/activate/{uid}/{token}"
+
+            subject = 'Activate Your PlumbConnect Account'
+            message = f"""
+            Hi {user.name},
+
+            Thank you for registering at PlumbConnect. Please click the link below to activate your account:
+            {activation_link}
+
+            Thanks,
+            The PlumbConnect Team
+            """
+            
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email],
+                fail_silently=False,
+            )
+            # -----------------------------
+
+            return user
+
+    # ... (keep your CustomTokenObtainPairSerializer) ...
+    
     
 
     def to_representation(self, instance):
@@ -79,10 +127,26 @@ class UserSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"image": "Only users with the 'plumber' role can have an image."})
         return data
 
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['name'] = user.name
-        token['role'] = user.role
-        return token
+    username_field = 'email'  # ensures DRF uses email as the identifier
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        password = attrs.get("password")
+
+        user = authenticate(email=email, password=password)
+        if not user:
+            raise serializers.ValidationError("Invalid email or password")
+
+        # --- Add this security check ---
+        if user.status != 'active':
+            raise serializers.ValidationError("This account is not active. Please check your email for the activation link.")
+        # -----------------------------
+
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }

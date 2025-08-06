@@ -1,0 +1,36 @@
+Super users:
+{
+  "phone": "1234567890",
+  "password": "admin123"
+}#old, not updated
+
+
+{
+
+"email":"alaa@gmail.com",
+"password":"admin123"
+
+}
+
+........................................................................................................
+Normal users:
+Ahmed Alaa user
+{
+ 
+ "email": "client@example.com",
+ "password": "clientpass123"
+   
+}
+
+
+
+plumber users:
+{
+  "email": "fahad.plumber@example.com",
+  "password": "plumber123"
+
+
+}
+
+
+

@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
-
 class NotificationSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.name', read_only=True)
 
@@ -15,7 +14,6 @@ class NotificationSerializer(serializers.ModelSerializer):
                   'is_read', 'is_important', 'created_at', 'action_url',
                   'content_type', 'object_id']
         read_only_fields = ['user', 'created_at', 'content_type', 'object_id']
-
 
 class NotificationCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,7 +28,6 @@ class NotificationCreateSerializer(serializers.ModelSerializer):
                 _("Only admin can create notifications manually.")
             )
         return data
-
 
 class NotificationUpdateSerializer(serializers.ModelSerializer):
     class Meta:

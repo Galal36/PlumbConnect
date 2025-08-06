@@ -2,22 +2,21 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Chat
 from chat_messages.models import Message
+from notifications.models import Notification
 from django.utils.translation import gettext_lazy as _
+from django.db import models
 
 User = get_user_model()
-
 
 class UserBasicSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'role', 'profile_image', 'is_verified']
-
+        fields = ['id', 'name', 'role', 'image', 'is_verified']
 
 class LastMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['id', 'message', 'sent_at', 'is_read', 'message_type', 'link']
-
 
 class ChatSerializer(serializers.ModelSerializer):
     sender = UserBasicSerializer(read_only=True)
@@ -30,7 +29,6 @@ class ChatSerializer(serializers.ModelSerializer):
         fields = ['id', 'sender', 'receiver', 'created_at', 'updated_at',
                   'is_active', 'last_message', 'unread_count']
         read_only_fields = ['sender', 'created_at', 'updated_at']
-
 
 class ChatCreateSerializer(serializers.ModelSerializer):
     receiver_id = serializers.IntegerField(write_only=True)
@@ -66,7 +64,6 @@ class ChatCreateSerializer(serializers.ModelSerializer):
         receiver_id = validated_data['receiver_id']
         receiver = User.objects.get(id=receiver_id)
 
-        # Check if chat already exists
         chat = Chat.objects.filter(
             models.Q(sender=sender, receiver=receiver) |
             models.Q(sender=receiver, receiver=sender)
@@ -74,11 +71,13 @@ class ChatCreateSerializer(serializers.ModelSerializer):
 
         if not chat:
             chat = Chat.objects.create(sender=sender, receiver=receiver)
-            from notifications.models import Notification
             Notification.objects.create(
                 user=receiver,
-                message=_("محادثة جديدة من %(name)s") % {'name': sender.name},
-                type='new_chat'
+                title=_("محادثة جديدة"),
+                content=_("محادثة جديدة من %(name)s") % {'name': sender.name},
+                notification_type='new_chat',
+                is_important=False,
+                action_url=f"http://localhost:8000/api/chats/{chat.id}/"
             )
 
         return chat

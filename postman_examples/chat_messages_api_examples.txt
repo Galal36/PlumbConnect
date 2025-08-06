@@ -1,9 +1,10 @@
+```
 # PlumbingConnect API - Chat Messages App Examples for Postman
 
-# Base URL: http://localhost:8000/api/v1/messages/
+# Base URL: http://localhost:8000/api/chat-messages/
 # Headers for all requests:
 # Authorization: Bearer <YOUR_JWT_TOKEN>
-# Content-Type: application/json (for POST/PUT/PATCH)
+# Content-Type: application/json (for POST/PATCH)
 # Accept-Language: ar (Optional, for Arabic responses)
 
 ---
@@ -11,7 +12,7 @@
 # 1. Get Messages by Chat ID (عرض رسائل محادثة معينة)
 # Description: Retrieve messages for a specific chat.
 # Method: GET
-# URL: http://localhost:8000/api/v1/messages/chat/1/ (Replace 1 with the actual chat ID)
+# URL: http://localhost:8000/api/chat-messages/1/messages/
 # Query Params:
 #   page: 1 (Optional, for pagination)
 #   page_size: 20 (Optional, for pagination)
@@ -24,12 +25,13 @@
 #         "image": null,
 #         "message_type": "text",
 #         "chat": 1,
-#         "sender": 1,
-#         "receiver": 2,
-#         "sent_at": "2023-10-27T10:00:00Z",
+#         "sender": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#         "receiver": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#         "sent_at": "2025-08-05T21:00:00Z",
 #         "is_read": false,
-#         "sender_name": "customer1",
-#         "receiver_name": "plumber1"
+#         "sender_name": "محمد أحمد",
+#         "receiver_name": "علي السباك",
+#         "link": null
 #     },
 #     {
 #         "id": 2,
@@ -37,12 +39,13 @@
 #         "image": null,
 #         "message_type": "text",
 #         "chat": 1,
-#         "sender": 2,
-#         "receiver": 1,
-#         "sent_at": "2023-10-27T10:05:00Z",
+#         "sender": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#         "receiver": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#         "sent_at": "2025-08-05T21:05:00Z",
 #         "is_read": false,
-#         "sender_name": "plumber1",
-#         "receiver_name": "customer1"
+#         "sender_name": "علي السباك",
+#         "receiver_name": "محمد أحمد",
+#         "link": null
 #     }
 # ]
 
@@ -51,13 +54,13 @@
 # 2. Send a New Message (إرسال رسالة جديدة)
 # Description: Send a new message within an existing chat.
 # Method: POST
-# URL: http://localhost:8000/api/v1/messages/
+# URL: http://localhost:8000/api/chat-messages/
 # Request Body (JSON):
 # {
-#     "chat_id": 1, # ID of the chat the message belongs to
+#     "chat_id": 1,
 #     "message": "تمام، سأرسل لك موقعي الآن.",
-#     "message_type": "text" # Optional, default is 'text'
-#     # "image": "base64_encoded_image_data" # For image messages, send as multipart/form-data
+#     "message_type": "text",
+#     "link": null
 # }
 # Example Response (Status: 201 Created):
 # {
@@ -66,20 +69,21 @@
 #     "image": null,
 #     "message_type": "text",
 #     "chat": 1,
-#     "sender": 1,
-#     "receiver": 2,
-#     "sent_at": "2023-10-27T10:10:00Z",
+#     "sender": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#     "receiver": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#     "sent_at": "2025-08-05T21:10:00Z",
 #     "is_read": false,
-#     "sender_name": "customer1",
-#     "receiver_name": "plumber1"
+#     "sender_name": "محمد أحمد",
+#     "receiver_name": "علي السباك",
+#     "link": null
 # }
 
 ---
 
 # 3. Mark Message as Read (تحديد رسالة كمقروءة)
 # Description: Mark a specific message as read. Only the receiver can mark a message as read.
-# Method: POST
-# URL: http://localhost:8000/api/v1/messages/1/mark-as-read/ (Replace 1 with the actual message ID)
+# Method: PATCH
+# URL: http://localhost:8000/api/chat-messages/1/messages/1/mark-as-read/
 # Request Body: (Empty or {})
 # Example Response (Status: 200 OK):
 # {
@@ -91,7 +95,7 @@
 # 4. Soft Delete a Message (حذف رسالة بشكل مؤقت)
 # Description: Mark a message as deleted (it won't be shown in lists but remains in DB). Only the sender can soft delete their own message.
 # Method: DELETE
-# URL: http://localhost:8000/api/v1/messages/1/soft-delete/ (Replace 1 with the actual message ID)
+# URL: http://localhost:8000/api/chat-messages/1/messages/1/soft-delete/
 # Request Body: (Empty or {})
 # Example Response (Status: 200 OK):
 # {
@@ -103,7 +107,7 @@
 # 5. Get Unread Messages Count (الحصول على عدد الرسائل غير المقروءة)
 # Description: Get the total count of unread messages for the authenticated user.
 # Method: GET
-# URL: http://localhost:8000/api/v1/messages/unread-count/
+# URL: http://localhost:8000/api/chat-messages/unread-count/
 # Example Response (Status: 200 OK):
 # {
 #     "unread_count": 5
@@ -114,7 +118,7 @@
 # 6. Get Unread Messages (عرض الرسائل غير المقروءة)
 # Description: Retrieve a list of all unread messages for the authenticated user.
 # Method: GET
-# URL: http://localhost:8000/api/v1/messages/unread/
+# URL: http://localhost:8000/api/chat-messages/unread/
 # Example Response (Status: 200 OK):
 # [
 #     {
@@ -123,11 +127,13 @@
 #         "image": null,
 #         "message_type": "text",
 #         "chat": 1,
-#         "sender": 2,
-#         "receiver": 1,
-#         "sent_at": "2023-10-27T10:05:00Z",
+#         "sender": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#         "receiver": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#         "sent_at": "2025-08-05T21:05:00Z",
 #         "is_read": false,
-#         "sender_name": "plumber1",
-#         "receiver_name": "customer1"
+#         "sender_name": "علي السباك",
+#         "receiver_name": "محمد أحمد",
+#         "link": null
 #     }
 # ]
+```

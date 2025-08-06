@@ -8,16 +8,14 @@ from .serializers import MessageSerializer, MessageCreateSerializer, MessageUpda
 from chats.models import Chat
 from django.http import HttpResponse
 import csv
-from users.permissions import IsAdmin  # استيراد IsAdmin من تطبيق users
-from notifications.models import Notification
+from users.permissions import IsAdmin
 from django.utils.translation import gettext_lazy as _
+from notifications.notification_helpers import notify_new_message
 
-# إذن مخصص للسماح للمدير أو أطراف المحادثة
 class IsAdminOrChatParticipant(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user.role == 'admin' or request.user in [obj.sender, obj.receiver]
 
-# Base queryset for messages accessible by the user
 class BaseMessageQuerysetMixin:
     def get_queryset(self):
         user = self.request.user
@@ -26,7 +24,6 @@ class BaseMessageQuerysetMixin:
             is_deleted=False
         ).select_related('sender', 'receiver', 'chat')
 
-# 1. MessageListCreateView: لعرض وإنشاء الرسائل
 class MessageListCreateView(BaseMessageQuerysetMixin, generics.ListCreateAPIView):
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -43,28 +40,20 @@ class MessageListCreateView(BaseMessageQuerysetMixin, generics.ListCreateAPIView
 
     def perform_create(self, serializer):
         message = serializer.save(sender=self.request.user)
-        Notification.objects.create(
-            user=message.receiver,
-            message=_("رسالة جديدة من %(name)s") % {'name': message.sender.name},
-            type='new_message'
-        )
+        notify_new_message(message.receiver, message.sender, message, request=self.request)
 
-# 2. MessageDetailView: لعرض تفاصيل رسالة واحدة
 class MessageDetailView(BaseMessageQuerysetMixin, generics.RetrieveAPIView):
     serializer_class = MessageSerializer
     permission_classes = [IsAdminOrChatParticipant]
 
-# 3. MessageUpdateView: لتحديث رسالة (مثلاً is_read)
 class MessageUpdateView(BaseMessageQuerysetMixin, generics.UpdateAPIView):
     serializer_class = MessageUpdateSerializer
     permission_classes = [IsAdminOrChatParticipant]
 
-# 4. MessageDeleteView: لحذف رسالة (Hard Delete)
 class MessageDeleteView(BaseMessageQuerysetMixin, generics.DestroyAPIView):
     serializer_class = MessageSerializer
     permission_classes = [IsAdminOrChatParticipant]
 
-# 5. MessagesByChatView: لعرض رسائل محادثة معينة
 class MessagesByChatView(BaseMessageQuerysetMixin, generics.ListAPIView):
     serializer_class = MessageSerializer
     permission_classes = [IsAdminOrChatParticipant]
@@ -82,13 +71,11 @@ class MessagesByChatView(BaseMessageQuerysetMixin, generics.ListAPIView):
         except Chat.DoesNotExist:
             return Message.objects.none()
 
-# 6. LatestMessagesByChatView: لعرض أحدث الرسائل في محادثة معينة
 class LatestMessagesByChatView(MessagesByChatView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.order_by('-sent_at')[:10]
 
-# 7. MarkMessageAsReadView: لتحديد رسالة كمقروءة
 class MarkMessageAsReadView(BaseMessageQuerysetMixin, generics.UpdateAPIView):
     serializer_class = MessageUpdateSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -100,10 +87,9 @@ class MarkMessageAsReadView(BaseMessageQuerysetMixin, generics.UpdateAPIView):
             message.save()
             serializer = self.get_serializer(message)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({'error': 'You can only mark messages sent to you as read'},
+        return Response({'error': _('You can only mark messages sent to you as read')},
                        status=status.HTTP_403_FORBIDDEN)
 
-# 8. SoftDeleteMessageView: لحذف رسالة بشكل مؤقت
 class SoftDeleteMessageView(BaseMessageQuerysetMixin, generics.UpdateAPIView):
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -113,11 +99,10 @@ class SoftDeleteMessageView(BaseMessageQuerysetMixin, generics.UpdateAPIView):
         if message.sender == request.user:
             message.is_deleted = True
             message.save()
-            return Response({'status': 'message deleted'}, status=status.HTTP_200_OK)
-        return Response({'error': 'You can only delete your own messages'},
+            return Response({'status': _('message deleted')}, status=status.HTTP_200_OK)
+        return Response({'error': _('You can only delete your own messages')},
                        status=status.HTTP_403_FORBIDDEN)
 
-# 9. MarkAllMessagesAsReadView: لتحديد جميع الرسائل غير المقروءة كمقروءة
 class MarkAllMessagesAsReadView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -128,10 +113,9 @@ class MarkAllMessagesAsReadView(generics.UpdateAPIView):
             is_read=False,
             is_deleted=False
         ).update(is_read=True)
-        return Response({'status': 'all messages marked as read', 'updated_count': updated_count},
+        return Response({'status': _('all messages marked as read'), 'updated_count': updated_count},
                        status=status.HTTP_200_OK)
 
-# 10. SearchMessagesView: للبحث في الرسائل
 class SearchMessagesView(BaseMessageQuerysetMixin, generics.ListAPIView):
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -147,7 +131,6 @@ class SearchMessagesView(BaseMessageQuerysetMixin, generics.ListAPIView):
             queryset = queryset.filter(message__icontains=query)
         return queryset
 
-# 11. MediaMessagesView: لعرض الرسائل التي تحتوي على صور
 class MediaMessagesView(BaseMessageQuerysetMixin, generics.ListAPIView):
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -156,7 +139,6 @@ class MediaMessagesView(BaseMessageQuerysetMixin, generics.ListAPIView):
     def get_queryset(self):
         return super().get_queryset().filter(message_type='image', image__isnull=False)
 
-# 12. UnreadMessagesView: لعرض الرسائل غير المقروءة للمستخدم الحالي
 class UnreadMessagesView(BaseMessageQuerysetMixin, generics.ListAPIView):
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -165,7 +147,6 @@ class UnreadMessagesView(BaseMessageQuerysetMixin, generics.ListAPIView):
     def get_queryset(self):
         return super().get_queryset().filter(receiver=self.request.user, is_read=False)
 
-# 13. UnreadCountView: لعد الرسائل غير المقروءة للمستخدم الحالي
 class UnreadCountView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -177,7 +158,6 @@ class UnreadCountView(generics.RetrieveAPIView):
         ).count()
         return Response({'unread_count': count}, status=status.HTTP_200_OK)
 
-# 14. MessageCountView: لعد إجمالي الرسائل للمستخدم
 class MessageCountView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -189,7 +169,6 @@ class MessageCountView(generics.RetrieveAPIView):
         ).count()
         return Response({'total_messages_count': count}, status=status.HTTP_200_OK)
 
-# 15. ExportChatMessagesView: لتصدير رسائل محادثة معينة إلى CSV
 class ExportChatMessagesView(BaseMessageQuerysetMixin, generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -198,7 +177,7 @@ class ExportChatMessagesView(BaseMessageQuerysetMixin, generics.ListAPIView):
         try:
             chat = Chat.objects.get(id=chat_id)
             if request.user not in [chat.sender, chat.receiver]:
-                return Response({'error': 'Access denied'}, status=status.HTTP_403_FORBIDDEN)
+                return Response({'error': _('Access denied')}, status=status.HTTP_403_FORBIDDEN)
 
             messages = super().get_queryset().filter(chat=chat).order_by('sent_at')
 
@@ -221,12 +200,29 @@ class ExportChatMessagesView(BaseMessageQuerysetMixin, generics.ListAPIView):
                 ])
             return response
         except Chat.DoesNotExist:
-            return Response({'error': 'Chat not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': _('Chat not found')}, status=status.HTTP_404_NOT_FOUND)
 
-# 16. SendSystemMessageView: لإرسال رسائل نظامية من المدير
 class SendSystemMessageView(generics.CreateAPIView):
     serializer_class = MessageCreateSerializer
     permission_classes = [IsAdmin]
 
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user, message_type='system')
+        message = serializer.save(sender=self.request.user, message_type='system')
+        notify_new_message(message.receiver, message.sender, message, request=self.request)
+
+class SendSystemMessageToChatView(generics.CreateAPIView):
+    serializer_class = MessageCreateSerializer
+    permission_classes = [IsAdmin]
+
+    def perform_create(self, serializer):
+        chat_id = self.kwargs['chat_id']
+        try:
+            chat = Chat.objects.get(id=chat_id)
+            message = serializer.save(
+                sender=self.request.user,
+                message_type='system',
+                chat=chat
+            )
+            notify_new_message(message.receiver, message.sender, message, request=self.request)
+        except Chat.DoesNotExist:
+            return Response({'error': _('Chat not found')}, status=status.HTTP_404_NOT_FOUND)

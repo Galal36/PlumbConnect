@@ -1,75 +1,83 @@
-"""
-مساعد لعرض جميع URLs المتاحة في النظام
-"""
 
-def get_all_urls():
-    """إرجاع قائمة بجميع URLs في النظام"""
-    return {
-        'authentication': {
-            'register': '/api/v1/accounts/auth/register/',
-            'login': '/api/v1/accounts/auth/login/',
-            'logout': '/api/v1/accounts/auth/logout/',
-            'refresh_token': '/api/v1/accounts/auth/refresh-token/',
-            'verify_phone': '/api/v1/accounts/auth/verify-phone/',
-            'reset_password': '/api/v1/accounts/auth/reset-password/',
-        },
-        'profile': {
-            'my_profile': '/api/v1/accounts/profile/',
-            'update_profile': '/api/v1/accounts/profile/update/',
-            'upload_image': '/api/v1/accounts/profile/upload-image/',
-        },
-        'users': {
-            'list': '/api/v1/accounts/users/',
-            'create': '/api/v1/accounts/users/create/',
-            'detail': '/api/v1/accounts/users/{id}/',
-            'plumbers': '/api/v1/accounts/plumbers/',
-            'customers': '/api/v1/accounts/customers/',
-            'search': '/api/v1/accounts/search/',
-        },
-        'chats': {
-            'list': '/api/v1/chats/',
-            'create': '/api/v1/chats/',
-            'detail': '/api/v1/chats/{id}/',
-            'my_chats': '/api/v1/chats/my-chats/',
-            'active': '/api/v1/chats/active/',
-            'archived': '/api/v1/chats/archived/',
-            'search': '/api/v1/chats/search/',
-        },
-        'messages': {
-            'list': '/api/v1/messages/',
-            'create': '/api/v1/messages/',
-            'detail': '/api/v1/messages/{id}/',
-            'by_chat': '/api/v1/messages/chat/{chat_id}/',
-            'unread': '/api/v1/messages/unread/',
-            'unread_count': '/api/v1/messages/unread-count/',
-        },
-        'complaints': {
-            'list': '/api/v1/complaints/',
-            'create': '/api/v1/complaints/',
-            'detail': '/api/v1/complaints/{id}/',
-            'my_complaints': '/api/v1/complaints/my-complaints/',
-            'pending': '/api/v1/complaints/pending/',
-            'resolved': '/api/v1/complaints/resolved/',
-            'statistics': '/api/v1/complaints/statistics/',
-        },
-        'notifications': {
-            'list': '/api/v1/notifications/',
-            'create': '/api/v1/notifications/create/',
-            'detail': '/api/v1/notifications/{id}/',
-            'unread': '/api/v1/notifications/unread/',
-            'unread_count': '/api/v1/notifications/unread-count/',
-            'mark_all_read': '/api/v1/notifications/mark-all-as-read/',
-        }
+from django.urls import reverse
+
+URL_PATTERNS = {
+    'chat_messages': {
+        'message-detail': 'api/chat-messages/{pk}/',
+        'messages-by-chat': 'api/chat-messages/chat/{chat_id}/',
+        'latest-messages-by-chat': 'api/chat-messages/chat/{chat_id}/latest/',
+        'mark-message-read': 'api/chat-messages/{pk}/mark-read/',
+        'soft-delete-message': 'api/chat-messages/{pk}/soft-delete/',
+        'mark-all-messages-read': 'api/chat-messages/mark-all-read/',
+        'search-messages': 'api/chat-messages/search/',
+        'media-messages': 'api/chat-messages/media/',
+        'unread-messages': 'api/chat-messages/unread/',
+        'unread-count': 'api/chat-messages/unread-count/',
+        'message-count': 'api/chat-messages/count/',
+        'export-chat-messages': 'api/chat-messages/export/chat/{chat_id}/',
+        'send-system-message': 'api/chat-messages/system-message/',
+        'send-system-message-to-chat': 'api/chat-messages/system-message/chat/{chat_id}/',
+    },
+    'chats': {
+        'chat-list-create': 'api/chats/',
+        'chat-detail': 'api/chats/{pk}/',
+        'chat-update': 'api/chats/{pk}/update/',
+        'chat-delete': 'api/chats/{pk}/delete/',
+        'my-chats': 'api/chats/my-chats/',
+        'active-chats': 'api/chats/active/',
+        'archived-chats': 'api/chats/archived/',
+        'search-chats': 'api/chats/search/',
+        'mark-chat-read': 'api/chats/{pk}/mark-read/',
+        'archive-chat': 'api/chats/{pk}/archive/',
+        'unarchive-chat': 'api/chats/{pk}/unarchive/',
+        'chat-with-user': 'api/chats/with-user/{user_id}/',
+        'chat-count': 'api/chats/count/',
+        'admin-create-chat': 'api/chats/admin-create/',
+    },
+    'complaints': {
+        'complaint-list-create': 'api/complaints/',
+        'complaint-detail': 'api/complaints/{pk}/',
+        'complaint-update': 'api/complaints/{pk}/update/',
+        'complaint-delete': 'api/complaints/{pk}/delete/',
+        'my-complaints': 'api/complaints/my-complaints/',
+        'complaints-against-me': 'api/complaints/against-me/',
+        'user-complaints': 'api/complaints/user/{user_id}/',
+        'pending-complaints': 'api/complaints/pending/',
+        'in-progress-complaints': 'api/complaints/in-progress/',
+        'resolved-complaints': 'api/complaints/resolved/',
+        'rejected-complaints': 'api/complaints/rejected/',
+        'complaints-by-type': 'api/complaints/type/{complaint_type}/',
+        'resolve-complaint': 'api/complaints/{pk}/resolve/',
+        'reject-complaint': 'api/complaints/{pk}/reject/',
+        'search-complaints': 'api/complaints/search/',
+        'complaint-statistics': 'api/complaints/statistics/',
+        'export-complaints': 'api/complaints/export/',
+    },
+    'notifications': {
+        'notification-list': 'api/notifications/',
+        'notification-create': 'api/notifications/create/',
+        'notification-detail': 'api/notifications/{pk}/',
+        'notification-update': 'api/notifications/{pk}/update/',
+        'notification-delete': 'api/notifications/{pk}/delete/',
+        'unread-notifications': 'api/notifications/unread/',
+        'read-notifications': 'api/notifications/read/',
+        'mark-notification-read': 'api/notifications/{pk}/mark-read/',
+        'mark-all-notifications-read': 'api/notifications/mark-all-read/',
+        'notifications-by-type': 'api/notifications/type/{notification_type}/',
+        'message-notifications': 'api/notifications/messages/',
+        'chat-notifications': 'api/notifications/chats/',
+        'complaint-notifications': 'api/notifications/complaints/',
+        'system-notifications': 'api/notifications/system/',
+        'unread-notification-count': 'api/notifications/unread-notification-count/',
+        'notification-count': 'api/notifications/count/',
+        'recent-notifications': 'api/notifications/recent/',
+        'important-notifications': 'api/notifications/important/',
+        'clear-all-notifications': 'api/notifications/clear-all/',
+        'clear-read-notifications': 'api/notifications/clear-read/',
+        'clear-old-notifications': 'api/notifications/clear-old/',
     }
+}
 
-def print_urls():
-    """طباعة جميع URLs بشكل منظم"""
-    urls = get_all_urls()
-    
-    print("🔗 جميع URLs المتاحة في PlumbingConnect API:")
-    print("=" * 60)
-    
-    for category, endpoints in urls.items():
-        print(f"\n📱 {category.upper()}:")
-        for name, url in endpoints.items():
-            print(f"  • {name:<20} → {url}")
+def get_url_pattern(app_name, url_name, **kwargs):
+    pattern = URL_PATTERNS.get(app_name, {}).get(url_name, '')
+    return pattern.format(**kwargs)

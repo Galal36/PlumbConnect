@@ -5,3 +5,5 @@ pillow
 djangorestframework
 django-cors-headers
 django-filter
+channels
+channels-redis

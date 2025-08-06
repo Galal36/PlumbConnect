@@ -2,10 +2,19 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Message
 from chats.models import Chat
+from notifications.models import Notification
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'role', 'image', 'is_verified']
+
 class MessageSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)
+    receiver = UserSerializer(read_only=True)
     sender_name = serializers.CharField(source='sender.name', read_only=True)
     receiver_name = serializers.CharField(source='receiver.name', read_only=True)
 
@@ -26,8 +35,6 @@ class MessageCreateSerializer(serializers.ModelSerializer):
         chat_id = validated_data.pop('chat_id')
         chat = Chat.objects.get(id=chat_id)
         sender = self.context['request'].user
-
-        # Determine receiver
         if chat.sender == sender:
             receiver = chat.receiver
         else:
@@ -39,9 +46,18 @@ class MessageCreateSerializer(serializers.ModelSerializer):
             chat=chat,
             **validated_data
         )
-
-        # Update chat timestamp
         chat.save()
+
+        Notification.objects.create(
+            user=receiver,
+            title=_("رسالة جديدة"),
+            content=_("لديك رسالة جديدة من %(name)s") % {'name': sender.name},
+            notification_type="new_message",
+            is_important=False,
+            action_url=f"http://localhost:8000/api/chats/{chat.id}/",
+            content_type="chat_messages.message",
+            object_id=message.id
+        )
 
         return message
 

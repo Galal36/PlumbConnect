@@ -1,9 +1,10 @@
+```
 # PlumbingConnect API - Notifications App Examples for Postman
 
-# Base URL: http://localhost:8000/api/v1/notifications/
+# Base URL: http://localhost:8000/api/notifications/
 # Headers for all requests:
 # Authorization: Bearer <YOUR_JWT_TOKEN>
-# Content-Type: application/json (for POST/PUT/PATCH)
+# Content-Type: application/json (for POST/PATCH)
 # Accept-Language: ar (Optional, for Arabic responses)
 
 ---
@@ -11,37 +12,41 @@
 # 1. Get My Notifications (عرض جميع إشعاراتي)
 # Description: Retrieve a list of all notifications for the authenticated user.
 # Method: GET
-# URL: http://localhost:8000/api/v1/notifications/
+# URL: http://localhost:8000/api/notifications/
 # Query Params:
 #   page: 1 (Optional, for pagination)
 #   page_size: 20 (Optional, for pagination)
 #   is_read: true/false (Optional, to filter read/unread notifications)
-#   notification_type: message/complaint/review/system/service/promotion (Optional, to filter by type)
+#   notification_type: new_message/new_chat/complaint_status/review_request/system/service_update (Optional, to filter by type)
 # Example Response (Status: 200 OK):
 # [
 #     {
 #         "id": 1,
 #         "user": 1,
-#         "user_username": "customer1",
+#         "user_name": "محمد أحمد",
 #         "title": "رسالة جديدة",
-#         "content": "لديك رسالة جديدة من plumber1",
-#         "notification_type": "message",
+#         "content": "لديك رسالة جديدة من علي السباك",
+#         "notification_type": "new_message",
 #         "is_read": false,
-#         "created_at": "2023-10-27T13:00:00Z",
-#         "action_url": null,
-#         "related_object_id": 101
+#         "is_important": false,
+#         "created_at": "2025-08-05T21:00:00Z",
+#         "action_url": "http://localhost:8000/api/chats/1/",
+#         "content_type": "chat_messages.message",
+#         "object_id": 101
 #     },
 #     {
 #         "id": 2,
 #         "user": 1,
-#         "user_username": "customer1",
+#         "user_name": "محمد أحمد",
 #         "title": "تحديث الشكوى",
 #         "content": "تم تحديث حالة شكواك إلى: In Progress",
-#         "notification_type": "complaint",
+#         "notification_type": "complaint_status",
 #         "is_read": true,
-#         "created_at": "2023-10-27T12:30:00Z",
-#         "action_url": "/complaints/5/",
-#         "related_object_id": 5
+#         "is_important": true,
+#         "created_at": "2025-08-05T20:30:00Z",
+#         "action_url": "http://localhost:8000/api/complaints/5/",
+#         "content_type": "complaints.complaint",
+#         "object_id": 5
 #     }
 # ]
 
@@ -50,20 +55,22 @@
 # 2. Get Unread Notifications (عرض الإشعارات غير المقروءة)
 # Description: Retrieve a list of unread notifications for the authenticated user.
 # Method: GET
-# URL: http://localhost:8000/api/v1/notifications/unread/
+# URL: http://localhost:8000/api/notifications/unread/
 # Example Response (Status: 200 OK):
 # [
 #     {
 #         "id": 1,
 #         "user": 1,
-#         "user_username": "customer1",
+#         "user_name": "محمد أحمد",
 #         "title": "رسالة جديدة",
-#         "content": "لديك رسالة جديدة من plumber1",
-#         "notification_type": "message",
+#         "content": "لديك رسالة جديدة من علي السباك",
+#         "notification_type": "new_message",
 #         "is_read": false,
-#         "created_at": "2023-10-27T13:00:00Z",
-#         "action_url": null,
-#         "related_object_id": 101
+#         "is_important": false,
+#         "created_at": "2025-08-05T21:00:00Z",
+#         "action_url": "http://localhost:8000/api/chats/1/",
+#         "content_type": "chat_messages.message",
+#         "object_id": 101
 #     }
 # ]
 
@@ -72,33 +79,24 @@
 # 3. Mark a Notification as Read (تحديد إشعار كمقروء)
 # Description: Mark a specific notification as read.
 # Method: PATCH
-# URL: http://localhost:8000/api/v1/notifications/1/mark-as-read/ (Replace 1 with the actual notification ID)
+# URL: http://localhost:8000/api/notifications/1/mark-as-read/
 # Request Body: (Empty or {})
 # Example Response (Status: 200 OK):
 # {
-#     "id": 1,
-#     "user": 1,
-#     "user_username": "customer1",
-#     "title": "رسالة جديدة",
-#     "content": "لديك رسالة جديدة من plumber1",
-#     "notification_type": "message",
-#     "is_read": true, # Now true
-#     "created_at": "2023-10-27T13:00:00Z",
-#     "action_url": null,
-#     "related_object_id": 101
+#     "status": "notification marked as read"
 # }
 
 ---
 
 # 4. Mark All Notifications as Read (تحديد جميع الإشعارات كمقروءة)
 # Description: Mark all unread notifications for the authenticated user as read.
-# Method: POST
-# URL: http://localhost:8000/api/v1/notifications/mark-all-as-read/
+# Method: PATCH
+# URL: http://localhost:8000/api/notifications/mark-all-as-read/
 # Request Body: (Empty or {})
 # Example Response (Status: 200 OK):
 # {
 #     "status": "all notifications marked as read",
-#     "updated_count": 5 # Number of notifications marked as read
+#     "updated_count": 5
 # }
 
 ---
@@ -106,10 +104,10 @@
 # 5. Get Unread Notifications Count (الحصول على عدد الإشعارات غير المقروءة)
 # Description: Get the total count of unread notifications for the authenticated user.
 # Method: GET
-# URL: http://localhost:8000/api/v1/notifications/unread-count/
+# URL: http://localhost:8000/api/notifications/unread-count/
 # Example Response (Status: 200 OK):
 # {
-#     "unread_notifications_count": 2
+#     "unread_count": 2
 # }
 
 ---
@@ -117,10 +115,11 @@
 # 6. Clear Read Notifications (مسح الإشعارات المقروءة)
 # Description: Delete all notifications that have been marked as read for the authenticated user.
 # Method: DELETE
-# URL: http://localhost:8000/api/v1/notifications/clear-read/
-# Example Response (Status: 204 No Content):
+# URL: http://localhost:8000/api/notifications/clear-read/
+# Example Response (Status: 200 OK):
 # {
-#     "status": "3 read notifications cleared" # Or similar message
+#     "status": "read notifications cleared",
+#     "deleted_count": 3
 # }
 
 ---
@@ -128,8 +127,10 @@
 # 7. Clear All Notifications (مسح جميع الإشعارات)
 # Description: Delete all notifications for the authenticated user.
 # Method: DELETE
-# URL: http://localhost:8000/api/v1/notifications/clear-all/
-# Example Response (Status: 204 No Content):
+# URL: http://localhost:8000/api/notifications/clear-all/
+# Example Response (Status: 200 OK):
 # {
-#     "status": "10 notifications cleared" # Or similar message
+#     "status": "all notifications cleared",
+#     "deleted_count": 10
 # }
+```

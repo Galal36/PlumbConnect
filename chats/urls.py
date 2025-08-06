@@ -5,7 +5,7 @@ app_name = 'chats'
 
 urlpatterns = [
     # CRUD Operations للمحادثات
-    path('', views.ChatListCreateView.as_view(), name='chat-list'),
+    path('', views.ChatListCreateView.as_view(), name='chat-list-create'),
     path('<int:pk>/', views.ChatDetailView.as_view(), name='chat-detail'),
     path('<int:pk>/update/', views.ChatUpdateView.as_view(), name='chat-update'),
     path('<int:pk>/delete/', views.ChatDeleteView.as_view(), name='chat-delete'),
@@ -17,7 +17,7 @@ urlpatterns = [
     path('search/', views.SearchChatsView.as_view(), name='search-chats'),
 
     # Actions للمحادثات
-    path('<int:pk>/mark-as-read/', views.MarkChatAsReadView.as_view(), name='mark-chat-read'),
+    path('<int:pk>/mark-as-read/', views.MarkChatAsReadView.as_view(), name='mark-chat-as-read'),
     path('<int:pk>/archive/', views.ArchiveChatView.as_view(), name='archive-chat'),
     path('<int:pk>/unarchive/', views.UnarchiveChatView.as_view(), name='unarchive-chat'),
 
