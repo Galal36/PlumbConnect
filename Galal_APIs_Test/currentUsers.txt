@@ -1,16 +1,10 @@
 Super users:
 {
-  "phone": "1234567890",
+  "email": "temp-1@example.com",
   "password": "admin123"
-}#old, not updated
-
-
-{
-
-"email":"alaa@gmail.com",
-"password":"admin123"
-
 }
+
+
 
 ........................................................................................................
 Normal users:

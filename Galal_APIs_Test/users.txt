@@ -17,11 +17,10 @@ Request Body:
 [
 Super users:
 {
-
-"email":"alaa@gmail.com",
-"password":"admin123"
-
+  "email": "temp-1@example.com",
+  "password": "admin123"
 }
+
 ]
 
 Normal users:[
