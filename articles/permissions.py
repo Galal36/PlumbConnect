@@ -20,16 +20,31 @@ class IsPlumberOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         
-        # Deny write access if the user is not authenticated or not a plumber.
-        return request.user.is_authenticated and request.user.role == 'plumber'
+        # For any write action, the user must be authenticated.
+        if not request.user.is_authenticated:
+            return False
+
+        # --- THIS IS THE NEW, SMARTER LOGIC ---
+        # If the action is 'create' (POST), only a plumber can do it.
+        if request.user.role=='admin' and view.action=='create':
+            return request.user.role == 'admin'
+            
+
+        if view.action == 'create':
+            return request.user.role == 'plumber'
+        
+        # For other actions like 'update' or 'destroy', we allow the request
+        # to proceed. The final decision will be made by has_object_permission.
+        return True
 
     def has_object_permission(self, request, view, obj):
         """
         Allow read-only access for anyone.
-        For write permissions, only allow the author of the article to edit it.
+        For write permissions, only allow the author OR an admin to edit/delete.
         """
         if request.method in permissions.SAFE_METHODS:
             return True
             
-        # Write permissions are only allowed to the author of the article.
-        return obj.user == request.user
+        # --- THIS IS THE CORRECTED LOGIC ---
+        # Write permissions are allowed to the author of the article OR any admin.
+        return obj.user == request.user or request.user.role == 'admin'

@@ -1,0 +1,15 @@
+First log in as an admin or plumber, plumber is better
+Second go to api/articles, go to body, choose form-data and write your article title and your description:
+like :
+key:description
+value:this is description
+key: title
+value:Article7
+Finally the article will be created and sent to gemini api and will have a feedback, this feedback will be sent to the admin
+...................
+
+With admin account, visit api/articles/ with method GET. You will find geminin review about the article the plumber has written.
+
+Visit /api/articles/9/approve/ and put in the body raw data like:{ "is_approved":true}
+  the is_approved will change form false to true.
+
