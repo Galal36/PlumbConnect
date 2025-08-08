@@ -1,51 +1,6 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
-*$py.class
-
-# Django migrations
-**/migrations/
-!*/migrations/__init__.py
-
-# Logs
-*.log
-
-# Environment variables
-.env
-
-# VS Code settings
-.vscode/
-
-# Virtual environments (custom name)
-env_Plumb/
-
-# Static and media (if generated)
-staticfiles/
-media/
-
-# macOS
-.DS_Store
-
-# Windows
-Thumbs.db
-
-
-
-
-
-# Ignore Python cache files
-__pycache__/
-*.py[cod]
-
-# Ignore virtual environments
-env_Plumb/
+*.pyc
 .venv/
-
-
-
-# Django
-db.sqlite3
-/media/
-
-# VS Code
+env/
 .vscode/
+.idea/
