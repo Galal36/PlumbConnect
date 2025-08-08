@@ -30,13 +30,18 @@ media/
 Thumbs.db
 
 
-# Python
-__pycache__/
-*.pyc
 
-# Environment
+
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environments
 env_Plumb/
-.env
+.venv/
+
+
 
 # Django
 db.sqlite3
