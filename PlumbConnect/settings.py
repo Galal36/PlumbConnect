@@ -43,6 +43,7 @@ DEFAULT_FROM_EMAIL = 'PlumbConnect <noreply@plumbconnect.com>'
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -61,9 +62,11 @@ INSTALLED_APPS = [
     'articles',
     'chat_messages',
 
+
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -76,9 +79,31 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
 }
 
 AUTH_USER_MODEL = 'users.User'
+
+# Django Channels Configuration
+ASGI_APPLICATION = 'PlumbConnect.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 ROOT_URLCONF = 'PlumbConnect.urls'
@@ -111,7 +136,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME':'plum_connect',
         'USER':'postgres',
-        'PASSWORD':'123',
+        'PASSWORD':'Rrr@2021',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -140,7 +165,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ar'
 
 TIME_ZONE = 'UTC'
 

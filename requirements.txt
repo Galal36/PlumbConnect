@@ -6,5 +6,6 @@ django-filter
 six
 google-generativeai
 python-dotenv
-
+channels
+channels-redis
 

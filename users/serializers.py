@@ -45,6 +45,8 @@ class UserSerializer(serializers.ModelSerializer):
             'name': {'required': True},
             'image': {'required': False}, # The image is not always required,
             'status': {'read_only': True}, # Status should not be set by user
+            'image': {'required': False}, # The image is not always required,
+            'status': {'read_only': True}, # Status should not be set by user
 
         }
 
