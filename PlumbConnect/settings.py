@@ -27,7 +27,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+# --- Email Configuration ---
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'galalmostafa362587@gmail.com'  
+EMAIL_HOST_PASSWORD = 'uzcm dsaz zagk ebqg' # <-- Replace with your App Password
+DEFAULT_FROM_EMAIL = 'PlumbConnect <noreply@plumbconnect.com>'
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     'users',
     'services',
     'reviews',
@@ -47,8 +55,7 @@ INSTALLED_APPS = [
     'chats',
     'articles',
     'chat_messages',
-    'comments',
-    'comment_replys',
+
 ]
 
 MIDDLEWARE = [

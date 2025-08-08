@@ -1,0 +1,87 @@
+Posts endpoints
+Method	Endpoint	Description
+GET	/api/posts/	Gets a list of all posts. Anyone can do this.
+POST	/api/posts/	Creates a new post. Requires authentication.
+GET	/api/posts/{id}/	Gets a single post, including all its comments and replies.
+PUT/PATCH	/api/posts/{id}/	Updates a post. Requires you to be the owner.
+DELETE	/api/posts/{id}/	Deletes a post. Requires you to be the owner.
+
+To create a post:Method: POST, URL: /api/posts/, Body (form-data if including an image):statement: "What is the best way to fix a running toilet?"
+
+image: (optional file).
+................................................................................................................................................
+
+Comments Endpoints
+These are for adding comments to an existing post.
+
+Method	Endpoint	Description
+POST	/api/comments/	Creates a new comment on a post. Requires authentication.
+PUT/PATCH	/api/comments/{id}/	Updates a comment. Requires you to be the owner.
+DELETE	/api/comments/{id}/	Deletes a comment. Requires you to be the owner.
+
+To create a comment:Method: POST, URL: /api/comments/, Body (JSON): You must provide the ID of the post you are commenting on.
+
+JSON
+
+{
+  "comment": "I think you need to check the flapper valve.",
+  "post": 1
+}
+
+
+................................................................................................................................................
+
+For comment_reply:
+GET
+- http://127.0.0.1:8001/api/replies/?comment=2    => to set all replies on comment with id=2
+or by The "Nested" Way  GET  /api/posts/{id}/, the response includes all the comments, and each comment includes its replies
+-
+
+
+. Comments Endpoints
+These are for adding comments to an existing post.
+
+Method	Endpoint	Description
+POST	/api/comments/	Creates a new comment on a post. Requires authentication.
+PUT/PATCH	/api/comments/{id}/	Updates a comment. Requires you to be the owner.
+DELETE	/api/comments/{id}/	Deletes a comment. Requires you to be the owner.
+
+Export to Sheets
+To create a comment:
+
+Method: POST
+
+URL: /api/comments/
+
+Body (JSON): You must provide the ID of the post you are commenting on.
+
+JSON
+
+{
+  "comment": "I think you need to check the flapper valve.",
+  "post": 1
+}
+2. Comment Replies Endpoints
+These are for adding replies to an existing comment.
+Method	Endpoint	Description
+POST	/api/replies/	Creates a new reply to a comment. Requires authentication.
+PUT/PATCH	/api/replies/{id}/	Updates a reply. Requires you to be the owner.
+DELETE	/api/replies/{id}/	Deletes a reply. Requires you to be the owner.
+
+To create a reply:Method: POST, URL: /api/replies/
+
+Body (JSON): You must provide the ID of the comment you are replying to.
+
+JSON
+
+
+{
+  "reply": "Good point! That's usually the problem.",
+  "comment": 1
+}
+
+................................................................................................................................................
+Like or Dislike a post(same posts app):
+
+Method: POST,URL: http://127.0.0.1:8001/api/posts/{id}/like/ (Replace {id} with the ID of the post you want to like).
+Body: No body is needed for this request.
