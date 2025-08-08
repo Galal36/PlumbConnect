@@ -1,0 +1,33 @@
+first create a new user like that:
+on /api/users/  (post)
+
+{
+  "name": "NewClient",
+  "email": "client@example.com",
+  "phone": "98788432",
+  "password": "client123",
+  "location_id": 1,
+  "role": "client"
+}
+1=>It will be created and the stauts field =inactive
+2=>A message will sent to client@example.com with a link like  http://your-frontend-domain.com/activate/OA/ctz07b-9812a9d7c036cb46dee119d251da375f
+with two important things 
+    - OA
+    -ctz07b-9812a9d7c036cb46dee119d251da375f
+You have to provide this in postman(as me -Galal- uses postman for testing)
+on endpoint http://127.0.0.1:8001/api/activate/OA/ctz07b-9812a9d7c036cb46dee119d251da375f/ change the port if you use 8000, and run that with the two imprtant parts I mentioned, a message:'"your email is activated" and status will change to be 'active'
+
+
+=> Forgetting password:
+   - no need for authentication
+      steps : 1- uses api/password-reset/ 2- method POST, body just send {"email": "user-who-forgot-password@example.com"}
+      3-the link will be sent inbox,useapi/password-reset/confirm/ to paste the extracted uid and token(last two parts of the link sent) and newpassword,  if you need to run on postman like that:
+ {
+  "uidb64": "OA",
+  "token": "ctz-abc123...",
+  "new_password": "my-new-secure-password"
+}
+
+If done, a message {
+    "message": "Password has been reset successfully."
+}
