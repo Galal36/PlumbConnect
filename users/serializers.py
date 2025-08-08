@@ -1,22 +1,24 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User, Location
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from rest_framework import serializers
 from .models import User  
 
 
 # --- Imports for Email Sending ---
 from django.core.mail import send_mail
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from .tokens import account_activation_token
 from django.conf import settings
 # ---------------------------------
 
-
+# --- Imports for Password Reset ---
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_str
+# ----------------------------------
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -103,9 +105,36 @@ class UserSerializer(serializers.ModelSerializer):
 
             return user
 
-    # ... (keep your CustomTokenObtainPairSerializer) ...
+
+
+    def update(self, instance, validated_data):
+        # The 'password' field represents the new password.
+        # We get it from initial_data to ensure we always have access to it.
+        new_password = self.initial_data.get('password')
+        old_password = self.initial_data.get('old_password')
+        
+        # The parent class handle the regular profile updates (name, email, etc.)
+        # We remove password fields from validated_data to prevent the default update behavior.
+        # to prevent hashing I used pop
+        validated_data.pop('password', None)
+        validated_data.pop('old_password', None)
+        user = super().update(instance, validated_data)
+
+        # Handle password change separately
+        if new_password:
+            if not old_password:
+                raise serializers.ValidationError({'old_password': 'This field is required when setting a new password.'})
+            
+            if not instance.check_password(old_password):
+                raise serializers.ValidationError({'old_password': 'Your old password was entered incorrectly. Please enter it again.'})
+            
+            # If the old password is correct, set the new password
+            user.set_password(new_password)
+            user.save()
+
+        return user
     
-    
+
 
     def to_representation(self, instance):
         """Controls the output (what is shown to the user)."""
@@ -128,7 +157,7 @@ class UserSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"image": "Only users with the 'plumber' role can have an image."})
         return data
 
-
+# Loggin in
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     username_field = 'email'  # ensures DRF uses email as the identifier
 
@@ -140,7 +169,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         if not user:
             raise serializers.ValidationError("Invalid email or password")
 
-        # --- Add this security check ---
+        # ---  security check ---
         if user.status != 'active':
             raise serializers.ValidationError("This account is not active. Please check your email for the activation link.")
         # -----------------------------
@@ -151,3 +180,32 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        if not User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError("No user is associated with this email address.")
+        return value
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    uidb64 = serializers.CharField()
+    token = serializers.CharField()
+    new_password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        try:
+            uid = force_str(urlsafe_base64_decode(attrs.get('uidb64')))
+            self.user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            raise serializers.ValidationError('The reset link is invalid.')
+
+        if not default_token_generator.check_token(self.user, attrs.get('token')):
+            raise serializers.ValidationError('The reset link is invalid or has expired.')
+        
+        return attrs
+
+    def save(self):
+        self.user.set_password(self.validated_data['new_password'])
+        self.user.save()
+        return self.user

@@ -1,0 +1,22 @@
+First log in as an admin or plumber, plumber is better
+Second go to api/articles, go to body, choose form-data and write your article title and your description:
+like :
+key:description
+value:this is description
+key: title
+value:Article7
+like that:
+{title	How to Fix a Dripping Faucet
+description	A dripping faucet is a common household problem. First, turn off the water supply to the sink. Then, use a wrench to loosen the packing nut on the faucet handle. You may need to replace the O-ring or the washer inside. Make sure to buy the correct size replacement part from your local hardware store.
+
+Export to Sheets
+
+}
+Finally the article will be created and sent to gemini api and will have a feedback, this feedback will be sent to the admin
+...................
+
+With admin account, visit api/articles/ with method GET. You will find geminin review about the article the plumber has written.
+
+Visit /api/articles/9/approve/ and put in the body raw data like:{ "is_approved":true}
+  the is_approved will change form false to true.
+
