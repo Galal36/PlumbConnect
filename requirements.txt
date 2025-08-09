@@ -8,4 +8,6 @@ google-generativeai
 python-dotenv
 channels
 channels-redis
+daphne
+
 

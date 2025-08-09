@@ -136,7 +136,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME':'plum_connect',
         'USER':'postgres',
-        'PASSWORD':'Rrr@2021',
+        'PASSWORD':'123',
         'HOST': 'localhost',
         'PORT': '5432',
     }
