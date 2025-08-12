@@ -12,26 +12,33 @@ class Location(models.Model):
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, phone, name, password=None, **extra_fields):
+    def create_user(self, email=None, phone=None, name=None, password=None, **extra_fields):
         if not phone:
             raise ValueError("The Phone number must be set")
+        if not name:
+            raise ValueError("The Name must be set")
+        
+        # Set email if provided, otherwise use phone as username
+        if email:
+            extra_fields.setdefault('email', email)
+        
         user = self.model(phone=phone, name=name, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, phone, name, password=None, **extra_fields):
+    def create_superuser(self, email=None, phone=None, name=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('role', 'admin')
 
-        return self.create_user(phone, name, password, **extra_fields)
+        return self.create_user(email=email, phone=phone, name=name, password=password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
         ('admin', 'Admin'),
-        ('moderator', 'Moderator'),
+        # ('moderator', 'Moderator'),
         ('plumber', 'Plumber'),
         ('client', 'Client'),
     )
