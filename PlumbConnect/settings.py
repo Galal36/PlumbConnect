@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     'services',
     'reviews',
     'reports',
+    'experiences',
     'posts',
     'notifications',
     'complaints',
