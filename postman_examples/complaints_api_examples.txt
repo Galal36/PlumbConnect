@@ -1,4 +1,3 @@
-```
 # PlumbingConnect API - Complaints App Examples for Postman
 
 # Base URL: http://localhost:8000/api/complaints/
@@ -7,10 +6,9 @@
 # Content-Type: application/json (for POST/PATCH)
 # Accept-Language: ar (Optional, for Arabic responses)
 
----
+# 1. Get My Complaints (عرض الشكاوى التي قدمتها أو قُدمت ضدي)
+# Description: Retrieve a list of complaints the authenticated user is involved in (filed by or against them).
 
-# 1. Get My Complaints (عرض الشكاوى التي قدمتها)
-# Description: Retrieve a list of complaints filed by the authenticated user.
 # Method: GET
 # URL: http://localhost:8000/api/complaints/my-complaints/
 # Query Params:
@@ -48,8 +46,10 @@
 #     "title": "سلوك غير لائق",
 #     "description": "المستخدم قام بإرسال رسائل غير لائقة.",
 #     "complaint_type": "user_behavior",
-#     "to_user_id": 2,
-#     "chat_id": 1
+
+#     "to_user_id": 2, # يجب أن يكون ID لمستخدم مختلف عن المستخدم الحالي
+#     "chat_id": 1     # اختياري: ID المحادثة المرتبطة بالشكوى
+
 # }
 # Example Response (Status: 201 Created):
 # {
@@ -96,13 +96,14 @@
 # }
 
 ---
-
-# 4. Resolve a Complaint (حل شكوى) - (Admin Only)
-# Description: Mark a complaint as 'resolved'. Only Admin users can perform this action.
+# 4. Update Complaint Status/Notes (تحديث حالة الشكوى/ملاحظات) - (Admin Only)
+# Description: Update the status or add admin notes to a complaint. Only Admin users can perform this action.
 # Method: PATCH
-# URL: http://localhost:8000/api/complaints/1/resolve/
+# URL: http://localhost:8000/api/complaints/1/admin-update/
 # Request Body (JSON):
 # {
+#     "status": "resolved",
+
 #     "admin_notes": "تم التواصل مع السباك وحل المشكلة."
 # }
 # Example Response (Status: 200 OK):
@@ -126,16 +127,37 @@
 
 ---
 
-# 5. Get Complaint Statistics (الحصول على إحصائيات الشكاوى) - (Admin Only)
-# Description: Get statistics about complaints (total, pending, in progress, resolved, rejected).
+# 5. Get All Complaints (عرض جميع الشكاوى) - (Admin Only)
+# Description: Retrieve a list of all complaints in the system. Only Admin users can perform this action.
 # Method: GET
-# URL: http://localhost:8000/api/complaints/statistics/
+# URL: http://localhost:8000/api/complaints/admin-list/
+# Query Params: (Same as "Get My Complaints")
+# Example Response (Status: 200 OK): (Similar to "Get My Complaints" but includes all complaints)
+
+---
+
+# 6. Get Complaints by Status (عرض الشكاوى حسب الحالة)
+# Description: Retrieve a list of complaints filtered by a specific status.
+# Method: GET
+# URL: http://localhost:8000/api/complaints/status/pending/
+# Example Response (Status: 200 OK): (List of complaints with 'pending' status)
+
+---
+
+# 7. Get Complaint Count (الحصول على عدد الشكاوى)
+# Description: Get the total count of complaints for the authenticated user (or all for admin).
+# Method: GET
+# URL: http://localhost:8000/api/complaints/count/
 # Example Response (Status: 200 OK):
 # {
-#     "total": 10,
-#     "pending": 3,
-#     "in_progress": 2,
-#     "resolved": 4,
-#     "rejected": 1
+#     "total_complaints_count": 5
 # }
-```
+
+---
+
+# 8. Delete a Complaint (حذف شكوى) - (Admin Only)
+# Description: Permanently delete a complaint by its ID. Only Admin users can perform this action.
+# Method: DELETE
+# URL: http://localhost:8000/api/complaints/1/delete/
+# Example Response (Status: 204 No Content): (Empty response body)
+

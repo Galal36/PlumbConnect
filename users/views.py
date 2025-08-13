@@ -3,7 +3,10 @@ from .models import User, Location
 from .permissions import IsAdminOrOwner
 from rest_framework.views import APIView
 from rest_framework import viewsets, permissions, status
+<<<<<<< HEAD
 from rest_framework.decorators import action
+=======
+>>>>>>> plumb_
 from rest_framework.response import Response
 
 
@@ -27,7 +30,11 @@ from django.conf import settings
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+<<<<<<< HEAD
     permission_classes = [permissions.AllowAny]  # Allow anyone to access locations for registration
+=======
+    permission_classes = [permissions.IsAuthenticated]
+>>>>>>> plumb_
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -43,6 +50,7 @@ class UserViewSet(viewsets.ModelViewSet):
         #Just the admin or the owner of the account can do these
         if self.action in ['update', 'partial_update', 'destroy']:
             return [IsAdminOrOwner()]
+<<<<<<< HEAD
         return [permissions.IsAuthenticated()]  # ✅ everything else needs token
 
     def create(self, request, *args, **kwargs):
@@ -72,6 +80,9 @@ class UserViewSet(viewsets.ModelViewSet):
             else:
                 print("Profile update validation failed:", serializer.errors)  # Debug print
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+=======
+        return [permissions.IsAuthenticated()]
+>>>>>>> plumb_
     
 class ActivateAccountView(APIView):
     permission_classes = [permissions.AllowAny] # Anyone can access this link
@@ -106,7 +117,11 @@ class PasswordResetRequestView(APIView):
             token = default_token_generator.make_token(user)
 
             # Replace with your frontend URL
+<<<<<<< HEAD
             reset_link = f"http://localhost:8080/reset-password?uid={uid}&token={token}"
+=======
+            reset_link = f"http://your-frontend-domain.com/reset-password/{uid}/{token}"
+>>>>>>> plumb_
 
             subject = 'Password Reset for Your PlumbConnect Account'
             message = f"""

@@ -9,11 +9,15 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+<<<<<<< HEAD
 #fetching the gemini api
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+import os
 
 from pathlib import Path
 
@@ -29,7 +33,6 @@ SECRET_KEY = 'django-insecure-2ea9v5l@!a)*12=_7uj@zz$2s&_(2rujk4hk!tnh$%58&&n#5s
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # CORS Configuration
@@ -64,6 +67,7 @@ CORS_ALLOWED_HEADERS = [
 # --- Email Configuration ---
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
+ALLOWED_HOSTS = []
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'galalmostafa362587@gmail.com'  
@@ -81,6 +85,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_filters',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
+    'django_filters',
+    'channels',
     'users',
     'services',
     'reviews',
@@ -92,8 +101,7 @@ INSTALLED_APPS = [
     'chats',
     'articles',
     'chat_messages',
-
-
+    'chatbot',
 ]
 
 MIDDLEWARE = [
@@ -113,6 +121,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
     'DEFAULT_FILTER_BACKENDS': [
@@ -172,8 +181,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -192,11 +199,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# AI Settings
+# AI ChatBot Settings
+XAI_API_KEY = os.environ.get('XAI_API_KEY', '')
+DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY', '')
+AI_CHATBOT_ENABLED = os.environ.get('AI_CHATBOT_ENABLED', 'True').lower() == 'true'
+AI_DEFAULT_MODEL = os.environ.get('AI_DEFAULT_MODEL', 'mock')
+AI_MAX_TOKENS = int(os.environ.get('AI_MAX_TOKENS', '1000'))
+AI_TEMPERATURE = float(os.environ.get('AI_TEMPERATURE', '0.7'))
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'ar'
+
+LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 

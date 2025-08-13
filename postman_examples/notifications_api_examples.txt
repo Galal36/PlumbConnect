@@ -1,4 +1,4 @@
-```
+
 # PlumbingConnect API - Notifications App Examples for Postman
 
 # Base URL: http://localhost:8000/api/notifications/
@@ -133,4 +133,11 @@
 #     "status": "all notifications cleared",
 #     "deleted_count": 10
 # }
-```
+
+---
+
+# 8. Get Notification Detail (عرض تفاصيل إشعار معين)
+# Description: Retrieve details of a specific notification by its ID.
+# Method: GET
+# URL: http://localhost:8000/api/notifications/1/
+# Example Response (Status: 200 OK): (Similar to notification object in list)

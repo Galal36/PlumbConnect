@@ -4,8 +4,6 @@ Super users:
   "password": "admin123"
 }
 
-
-
 ........................................................................................................
 Normal users:
 Ahmed Alaa user
@@ -22,8 +20,5 @@ plumber users:
 {
   "email": "fahad.plumber@example.com",
   "password": "plumber123"
-
-
 }
-
 

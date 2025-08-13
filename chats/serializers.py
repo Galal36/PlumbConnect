@@ -1,23 +1,40 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Chat
+<<<<<<< HEAD
 from chat_messages.models import Message
+=======
+from chat_messages.models import Message  # هذا الاستيراد سيعمل بمجرد توفير نموذج الرسائل
+>>>>>>> plumb_
 from notifications.models import Notification
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 
 User = get_user_model()
 
+<<<<<<< HEAD
 class UserBasicSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'name', 'role', 'image', 'is_verified']
+=======
+
+class UserBasicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'role', 'image', 'is_active']
+
+>>>>>>> plumb_
 
 class LastMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['id', 'message', 'sent_at', 'is_read', 'message_type', 'link']
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> plumb_
 class ChatSerializer(serializers.ModelSerializer):
     sender = UserBasicSerializer(read_only=True)
     receiver = UserBasicSerializer(read_only=True)
@@ -27,9 +44,16 @@ class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
         fields = ['id', 'sender', 'receiver', 'created_at', 'updated_at',
+<<<<<<< HEAD
                   'is_active', 'last_message', 'unread_count']
         read_only_fields = ['sender', 'created_at', 'updated_at']
 
+=======
+                  'is_active', 'is_archived', 'last_message', 'unread_count']
+        read_only_fields = ['sender', 'created_at', 'updated_at']
+
+
+>>>>>>> plumb_
 class ChatCreateSerializer(serializers.ModelSerializer):
     receiver_id = serializers.IntegerField(write_only=True)
     is_admin_created = serializers.BooleanField(default=False, write_only=True)
@@ -42,10 +66,27 @@ class ChatCreateSerializer(serializers.ModelSerializer):
         try:
             receiver = User.objects.get(id=value)
             sender = self.context['request'].user
+<<<<<<< HEAD
+=======
+
+            # التحقق من أن المحادثة بين أدوار مختلفة
+>>>>>>> plumb_
             if sender.role == receiver.role:
                 raise serializers.ValidationError(
                     _("Chat must be between a client and a plumber.")
                 )
+<<<<<<< HEAD
+=======
+
+            # التحقق الجديد: السباك لا يستطيع بدء محادثة مع العميل
+            # إلا إذا كان المسؤول هو من ينشئ المحادثة
+            is_admin_created = self.initial_data.get('is_admin_created', False)
+            if sender.role == 'plumber' and receiver.role == 'client' and not is_admin_created:
+                raise serializers.ValidationError(
+                    _("Plumbers cannot initiate chats with clients. Only clients can start conversations with plumbers.")
+                )
+
+>>>>>>> plumb_
             return value
         except User.DoesNotExist:
             raise serializers.ValidationError(_("Receiver does not exist."))
@@ -81,3 +122,12 @@ class ChatCreateSerializer(serializers.ModelSerializer):
             )
 
         return chat
+<<<<<<< HEAD
+=======
+
+
+class ChatUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chat
+        fields = ['is_active', 'is_archived']
+>>>>>>> plumb_

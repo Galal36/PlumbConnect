@@ -12,6 +12,7 @@ class Location(models.Model):
 
 
 class UserManager(BaseUserManager):
+<<<<<<< HEAD
     def create_user(self, email=None, phone=None, name=None, password=None, **extra_fields):
         if not phone:
             raise ValueError("The Phone number must be set")
@@ -22,23 +23,40 @@ class UserManager(BaseUserManager):
         if email:
             extra_fields.setdefault('email', email)
         
+=======
+    def create_user(self, phone, name, password=None, **extra_fields):
+        if not phone:
+            raise ValueError("The Phone number must be set")
+>>>>>>> plumb_
         user = self.model(phone=phone, name=name, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
+<<<<<<< HEAD
     def create_superuser(self, email=None, phone=None, name=None, password=None, **extra_fields):
+=======
+    def create_superuser(self, phone, name, password=None, **extra_fields):
+>>>>>>> plumb_
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('role', 'admin')
 
+<<<<<<< HEAD
         return self.create_user(email=email, phone=phone, name=name, password=password, **extra_fields)
+=======
+        return self.create_user(phone, name, password, **extra_fields)
+>>>>>>> plumb_
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
         ('admin', 'Admin'),
+<<<<<<< HEAD
         # ('moderator', 'Moderator'),
+=======
+        ('moderator', 'Moderator'),
+>>>>>>> plumb_
         ('plumber', 'Plumber'),
         ('client', 'Client'),
     )
