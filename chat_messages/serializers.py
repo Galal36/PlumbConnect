@@ -4,21 +4,14 @@ from .models import Message
 from chats.models import Chat
 from notifications.models import Notification
 from django.utils.translation import gettext_lazy as _
-<<<<<<< HEAD
-=======
 from django.contrib.contenttypes.models import ContentType # <--- إضافة هذا الاستيراد
->>>>>>> plumb_
 
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-<<<<<<< HEAD
-        fields = ['id', 'name', 'role', 'image', 'is_verified']
-=======
         fields = ['id', 'name', 'role', 'image', 'status']
->>>>>>> plumb_
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)
@@ -56,12 +49,9 @@ class MessageCreateSerializer(serializers.ModelSerializer):
         )
         chat.save()
 
-<<<<<<< HEAD
-=======
         # <--- التعديل هنا: جلب كائن ContentType الفعلي
         message_content_type = ContentType.objects.get_for_model(Message)
 
->>>>>>> plumb_
         Notification.objects.create(
             user=receiver,
             title=_("رسالة جديدة"),
@@ -69,11 +59,7 @@ class MessageCreateSerializer(serializers.ModelSerializer):
             notification_type="new_message",
             is_important=False,
             action_url=f"http://localhost:8000/api/chats/{chat.id}/",
-<<<<<<< HEAD
-            content_type="chat_messages.message",
-=======
             content_type=message_content_type, # <--- استخدام الكائن هنا
->>>>>>> plumb_
             object_id=message.id
         )
 
@@ -84,12 +70,7 @@ class MessageCreateSerializer(serializers.ModelSerializer):
             chat = Chat.objects.get(id=value)
             if self.context['request'].user not in [chat.sender, chat.receiver]:
                 raise serializers.ValidationError("You are not a participant in this chat.")
-<<<<<<< HEAD
-            if chat.sender.role == chat.receiver.role:
-                raise serializers.ValidationError("Chat must be between a client and a plumber.")
-=======
             # تم إزالة التحقق من دور المستخدمين هنا
->>>>>>> plumb_
             return value
         except Chat.DoesNotExist:
             raise serializers.ValidationError("Chat does not exist.")
