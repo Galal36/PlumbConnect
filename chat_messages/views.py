@@ -10,12 +10,8 @@ from django.http import HttpResponse
 import csv
 from users.permissions import IsAdmin
 from django.utils.translation import gettext_lazy as _
-<<<<<<< HEAD
-from notifications.notification_helpers import notify_new_message
-=======
 from utils.notification_helpers import notify_new_message
 from rest_framework.exceptions import NotFound # تم إضافة هذا الاستيراد
->>>>>>> plumb_
 
 class IsAdminOrChatParticipant(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -44,12 +40,8 @@ class MessageListCreateView(BaseMessageQuerysetMixin, generics.ListCreateAPIView
         return MessageSerializer
 
     def perform_create(self, serializer):
-<<<<<<< HEAD
-        message = serializer.save(sender=self.request.user)
-=======
         # تم تعديل هذا السطر: إزالة sender=self.request.user
         message = serializer.save()
->>>>>>> plumb_
         notify_new_message(message.receiver, message.sender, message, request=self.request)
 
 class MessageDetailView(BaseMessageQuerysetMixin, generics.RetrieveAPIView):
@@ -235,9 +227,5 @@ class SendSystemMessageToChatView(generics.CreateAPIView):
             )
             notify_new_message(message.receiver, message.sender, message, request=self.request)
         except Chat.DoesNotExist:
-<<<<<<< HEAD
-            return Response({'error': _('Chat not found')}, status=status.HTTP_404_NOT_FOUND)
-=======
             # تم تعديل هذا الجزء: رفع NotFound بدلاً من Response
             raise NotFound(_('Chat not found'))
->>>>>>> plumb_
