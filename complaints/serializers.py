@@ -4,15 +4,6 @@ from .models import Complaint
 from chats.models import Chat
 from notifications.models import Notification
 from django.utils.translation import gettext_lazy as _
-<<<<<<< HEAD
-
-User = get_user_model()
-
-class UserBasicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'name', 'role', 'image', 'is_verified']
-=======
 from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()
@@ -23,7 +14,6 @@ class UserBasicSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'name', 'role', 'image', 'status']
 
->>>>>>> plumb_
 
 class ComplaintSerializer(serializers.ModelSerializer):
     from_user = UserBasicSerializer(read_only=True)
@@ -44,10 +34,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
     def get_resolved_by_name(self, obj):
         return obj.resolved_by.name if obj.resolved_by else None
 
-<<<<<<< HEAD
-=======
 
->>>>>>> plumb_
 class ComplaintCreateSerializer(serializers.ModelSerializer):
     to_user_id = serializers.IntegerField(write_only=True)
     chat_id = serializers.IntegerField(write_only=True, required=False)
@@ -91,10 +78,7 @@ class ComplaintCreateSerializer(serializers.ModelSerializer):
         chat_id = validated_data.pop('chat_id', None)
         to_user = User.objects.get(id=to_user_id)
         from_user = self.context['request'].user
-<<<<<<< HEAD
-=======
 
->>>>>>> plumb_
         chat = Chat.objects.get(id=chat_id) if chat_id else None
 
         complaint = Complaint.objects.create(
@@ -104,11 +88,8 @@ class ComplaintCreateSerializer(serializers.ModelSerializer):
             **validated_data
         )
 
-<<<<<<< HEAD
-=======
         complaint_content_type = ContentType.objects.get_for_model(Complaint)
 
->>>>>>> plumb_
         Notification.objects.create(
             user=to_user,
             title=_("شكوى جديدة"),
@@ -116,20 +97,13 @@ class ComplaintCreateSerializer(serializers.ModelSerializer):
             notification_type='complaint_status',
             is_important=True,
             action_url=f"http://localhost:8000/api/complaints/{complaint.id}/",
-<<<<<<< HEAD
-            content_type="complaints.complaint",
-=======
             content_type=complaint_content_type,
->>>>>>> plumb_
             object_id=complaint.id
         )
 
         return complaint
 
-<<<<<<< HEAD
-=======
 
->>>>>>> plumb_
 class ComplaintUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Complaint
