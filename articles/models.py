@@ -10,12 +10,9 @@ class Article(models.Model):
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-<<<<<<< HEAD
     ai_review_score = models.IntegerField(null=True, blank=True, help_text="Overall score from AI (e.g., average of technical and relevance)")
     ai_review_summary = models.TextField(blank=True, null=True, help_text="Summary provided by AI")
     ai_review_concerns = models.JSONField(null=True, blank=True, help_text="Safety or content concerns identified by AI")
-=======
->>>>>>> plumb_
 
     def __str__(self):
         return self.title
