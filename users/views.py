@@ -3,10 +3,6 @@ from .models import User, Location
 from .permissions import IsAdminOrOwner
 from rest_framework.views import APIView
 from rest_framework import viewsets, permissions, status
-<<<<<<< HEAD
-from rest_framework.decorators import action
-=======
->>>>>>> plumb_
 from rest_framework.response import Response
 
 
@@ -30,11 +26,7 @@ from django.conf import settings
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
-<<<<<<< HEAD
-    permission_classes = [permissions.AllowAny]  # Allow anyone to access locations for registration
-=======
     permission_classes = [permissions.IsAuthenticated]
->>>>>>> plumb_
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -50,39 +42,7 @@ class UserViewSet(viewsets.ModelViewSet):
         #Just the admin or the owner of the account can do these
         if self.action in ['update', 'partial_update', 'destroy']:
             return [IsAdminOrOwner()]
-<<<<<<< HEAD
-        return [permissions.IsAuthenticated()]  # ✅ everything else needs token
-
-    def create(self, request, *args, **kwargs):
-        print("Registration data received:", request.data)  # Debug print
-        try:
-            response = super().create(request, *args, **kwargs)
-            print("Registration successful:", response.data)
-            return response
-        except Exception as e:
-            print("Registration error:", str(e))
-            print("Error type:", type(e))
-            raise
-
-    @action(detail=False, methods=['get', 'patch'])
-    def me(self, request):
-        """Get or update current user data"""
-        if request.method == 'GET':
-            serializer = self.get_serializer(request.user)
-            return Response(serializer.data)
-        elif request.method == 'PATCH':
-            print("Profile update data received:", request.data)  # Debug print
-            serializer = self.get_serializer(request.user, data=request.data, partial=True)
-            if serializer.is_valid():
-                print("Profile update validation passed")  # Debug print
-                serializer.save()
-                return Response(serializer.data)
-            else:
-                print("Profile update validation failed:", serializer.errors)  # Debug print
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-=======
         return [permissions.IsAuthenticated()]
->>>>>>> plumb_
     
 class ActivateAccountView(APIView):
     permission_classes = [permissions.AllowAny] # Anyone can access this link
@@ -117,11 +77,7 @@ class PasswordResetRequestView(APIView):
             token = default_token_generator.make_token(user)
 
             # Replace with your frontend URL
-<<<<<<< HEAD
-            reset_link = f"http://localhost:8080/reset-password?uid={uid}&token={token}"
-=======
             reset_link = f"http://your-frontend-domain.com/reset-password/{uid}/{token}"
->>>>>>> plumb_
 
             subject = 'Password Reset for Your PlumbConnect Account'
             message = f"""
