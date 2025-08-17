@@ -21,7 +21,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-<<<<<<< HEAD
     path('api/', include('users.urls')),  # المسارات الخاصة بالمستخدمين
     path('api/articles/', include('articles.urls')),
     path('api/', include('posts.urls')),
@@ -29,10 +28,6 @@ urlpatterns = [
     path('api/services/', include('services.api.urls')),
     path('api/', include('experiences.api.urls')),
     path('api/', include('reports.api.urls')),
-
-    path('api/users/', include('users.urls')),
-    path('api/articles/', include('articles.urls')),
-    path('api/posts/', include('posts.urls')),
     path('api/chats/', include('chats.urls')),
     path('api/chat-messages/', include('chat_messages.urls')),
     path('api/complaints/', include('complaints.urls')),
