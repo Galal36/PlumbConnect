@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # # articles/serializers.py
 # from rest_framework import serializers
 # from .models import Article
@@ -28,9 +27,6 @@
 #         read_only_fields = ['is_approved', 'user']
 
 
-=======
-# articles/serializers.py
->>>>>>> plumb_
 from rest_framework import serializers
 from .models import Article
 from users.serializers import UserSerializer # To display author info
@@ -44,17 +40,12 @@ class ArticleApprovalSerializer(serializers.ModelSerializer):
         model = Article
         fields = ['is_approved']
 
-<<<<<<< HEAD
 # --- NEW: Serializer for creating an article (hides AI fields) ---
 class ArticleCreateSerializer(serializers.ModelSerializer):
     """
     This serializer is used ONLY for the 'create' action.
     It does not include the AI review fields in its output.
     """
-=======
-class ArticleSerializer(serializers.ModelSerializer):
-    # Use a read-only serializer to show author details but not allow editing them.
->>>>>>> plumb_
     user = UserSerializer(read_only=True)
 
     class Meta:
@@ -63,7 +54,6 @@ class ArticleSerializer(serializers.ModelSerializer):
             'id', 'title', 'description', 'image', 'user', 
             'is_approved', 'created_at', 'updated_at'
         ]
-<<<<<<< HEAD
         read_only_fields = ['is_approved', 'user']
 
 # --- UPDATED: The main serializer for viewing articles ---
@@ -82,7 +72,3 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
             'ai_review_score', 'ai_review_summary', 'ai_review_concerns'
         ]
         read_only_fields = ['is_approved', 'user']
-=======
-        # Make 'is_approved' read-only for plumbers. Only admins can change this.
-        read_only_fields = ['is_approved', 'user']
->>>>>>> plumb_
