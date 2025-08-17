@@ -5,10 +5,6 @@ from .models import User, Location
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import User  
-<<<<<<< HEAD
-from django.utils.translation import gettext as _  
-=======
->>>>>>> plumb_
 
 
 # --- Imports for Email Sending ---
@@ -41,11 +37,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'name', 'email', 'phone', 'password', 'location', 'location_id',
-<<<<<<< HEAD
-            'role', 'status', 'image'
-=======
             'role', 'status'
->>>>>>> plumb_
         ]
         extra_kwargs = {
             'password': {'write_only': True},
@@ -53,11 +45,6 @@ class UserSerializer(serializers.ModelSerializer):
             'name': {'required': True},
             'image': {'required': False}, # The image is not always required,
             'status': {'read_only': True}, # Status should not be set by user
-<<<<<<< HEAD
-            'image': {'required': False}, # The image is not always required,
-            'status': {'read_only': True}, # Status should not be set by user
-=======
->>>>>>> plumb_
 
         }
 
@@ -77,34 +64,16 @@ class UserSerializer(serializers.ModelSerializer):
         return value
     
     def validate_phone(self, value):
-<<<<<<< HEAD
-        # Remove any non-digit characters (like +965)
-        clean_phone = ''.join(filter(str.isdigit, value))
-        if len(clean_phone) < 8:
-            raise serializers.ValidationError(_("رقم الهاتف غير صالح."))
-        
-        # Check for uniqueness, excluding the current user if this is an update
-        if User.objects.filter(phone=clean_phone).exclude(pk=self.instance.pk if self.instance else None).exists():
-            raise serializers.ValidationError(_("رقم الهاتف مستخدم بالفعل."))
-        
-        return clean_phone
-=======
         if not value.isdigit() or len(value) < 8:
             raise serializers.ValidationError(_("رقم الهاتف غير صالح."))
         return value
->>>>>>> plumb_
 
 
     def create(self, validated_data):
             # Create the user with status='inactive'
-<<<<<<< HEAD
-            # The create_user method already handles password setting
-            user = User.objects.create_user(**validated_data)
-=======
             user = User.objects.create_user(**validated_data)
             user.set_password(validated_data['password'])
             user.save()
->>>>>>> plumb_
 
             # --- Send Confirmation Email ---
             token = account_activation_token.make_token(user)
@@ -112,11 +81,7 @@ class UserSerializer(serializers.ModelSerializer):
             
             # This will be the link in the email.
             # You will need to replace 'your-frontend-domain.com' with your actual frontend URL.
-<<<<<<< HEAD
-            activation_link = f"http://localhost:8080/activate/{uid}/{token}"
-=======
             activation_link = f"http://your-frontend-domain.com/activate/{uid}/{token}"
->>>>>>> plumb_
 
             subject = 'Activate Your PlumbConnect Account'
             message = f"""
