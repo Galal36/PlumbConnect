@@ -129,10 +129,10 @@ export default function Articles() {
     
     // Handle search query
     if (searchQuery) {
-      const matchesSearch =
-        article.title.includes(searchQuery) ||
-        article.description.includes(searchQuery);
-      return matchesSearch;
+    const matchesSearch =
+      article.title.includes(searchQuery) ||
+      article.description.includes(searchQuery);
+    return matchesSearch;
     }
     
     return true;
@@ -325,26 +325,26 @@ export default function Articles() {
               </div>
             ) : (
               filteredArticles.map((article) => (
-                <Card
-                  key={article.id}
-                  className="premium-card-gradient hover:shadow-2xl transition-all duration-300 hover:scale-105"
-                >
-                  <CardContent className="p-0">
-                    <div className="relative">
-                      <LazyImage
+              <Card
+                key={article.id}
+                className="premium-card-gradient hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              >
+                <CardContent className="p-0">
+                  <div className="relative">
+                    <LazyImage
                         src={article.image || "/placeholder.svg"}
-                        alt={`صورة مقال ${article.title} - دليل من خبير فني صحي في الكويت`}
-                        className="w-full h-48 object-cover rounded-t-lg"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="p-6">
+                      alt={`صورة مقال ${article.title} - دليل من خبير فني صحي في الكويت`}
+                      className="w-full h-48 object-cover rounded-t-lg"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="p-6">
                       {/* Status Badge */}
-                      <div className="flex justify-between items-start mb-3">
+                    <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2">
-                          <h3 className="text-xl font-semibold text-white line-clamp-2 flex-1">
-                            {article.title}
-                          </h3>
+                      <h3 className="text-xl font-semibold text-white line-clamp-2 flex-1">
+                        {article.title}
+                      </h3>
                           {article.is_approved ? (
                             <Badge variant="default" className="bg-green-600">
                               <CheckCircle className="h-3 w-3 ms-1" />
@@ -358,20 +358,20 @@ export default function Articles() {
                           )}
                         </div>
                         {user?.id === article.user.id && (
-                          <DropdownMenu
-                            items={createEditDeleteItems(
+                        <DropdownMenu
+                          items={createEditDeleteItems(
                               () => handleEditArticle(article),
-                              () => {
-                                setArticleToDelete(article.id);
-                                setShowDeleteDialog(true);
-                              },
-                            )}
-                          />
-                        )}
-                      </div>
-                      <p className="text-gray-300 mb-4 line-clamp-3">
-                        {article.description}
-                      </p>
+                            () => {
+                              setArticleToDelete(article.id);
+                              setShowDeleteDialog(true);
+                            },
+                          )}
+                        />
+                      )}
+                    </div>
+                    <p className="text-gray-300 mb-4 line-clamp-3">
+                      {article.description}
+                    </p>
 
                       {/* AI Review Information for Admins */}
                       {isAdmin && article.ai_review_summary && (
@@ -430,41 +430,41 @@ export default function Articles() {
                         </div>
                       )}
 
-                      {/* Author Info */}
-                      <div className="flex items-center gap-3 mb-4">
-                        <Link
+                    {/* Author Info */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <Link
                           to={`/plumber/${article.user.id}`}
-                          className="hover:opacity-80 transition-opacity"
-                        >
-                          <Avatar className="w-8 h-8 cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all">
+                        className="hover:opacity-80 transition-opacity"
+                      >
+                        <Avatar className="w-8 h-8 cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all">
                             <AvatarImage src={article.user.image} />
-                            <AvatarFallback>
+                          <AvatarFallback>
                               {article.user.name.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                        </Link>
-                        <div className="flex-1">
-                          <Link
+                          </AvatarFallback>
+                        </Avatar>
+                      </Link>
+                      <div className="flex-1">
+                        <Link
                             to={`/plumber/${article.user.id}`}
-                            className="text-sm font-semibold text-white hover:text-primary transition-colors cursor-pointer"
-                          >
+                          className="text-sm font-semibold text-white hover:text-primary transition-colors cursor-pointer"
+                        >
                             {article.user.name}
-                          </Link>
-                          <p className="text-xs text-gray-400">
-                            {formatDate(article.created_at)}
-                          </p>
-                        </div>
-                      </div>
-
-                      <Button className="w-full" asChild>
-                        <Link to={`/articles/${article.id}`}>
-                          <BookOpen className="h-4 w-4 ms-2" />
-                          قراءة المقال
                         </Link>
-                      </Button>
+                        <p className="text-xs text-gray-400">
+                            {formatDate(article.created_at)}
+                        </p>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
+
+                    <Button className="w-full" asChild>
+                      <Link to={`/articles/${article.id}`}>
+                        <BookOpen className="h-4 w-4 ms-2" />
+                        قراءة المقال
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
               ))
             )}
           </div>
