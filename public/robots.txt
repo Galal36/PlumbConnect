@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Block private/admin areas
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /plumber-dashboard
+Disallow: /chat/
+Disallow: /notifications
+Disallow: /api/
+
+# Allow important pages
+Allow: /
+Allow: /plumbers
+Allow: /services
+Allow: /articles
+Allow: /posts
+Allow: /how-to-choose
+
+# Sitemap location
+Sitemap: https://plumber-kuwait.com/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1

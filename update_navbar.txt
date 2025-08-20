@@ -1,0 +1,13 @@
+الملفات التي تحتاج تحديث navbar:
+1. Articles.tsx - ✓ تم إضافة import
+2. Complain.tsx 
+3. Chat.tsx
+4. PlumberProfile.tsx
+5. PlumberDashboard.tsx
+6. Notifications.tsx
+7. Services.tsx
+8. ViewPost.tsx
+9. AddPost.tsx
+10. Register.tsx
+
+سأحدث هذه الملفات واحداً تلو الآخر.

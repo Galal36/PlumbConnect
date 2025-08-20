@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OG Image Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', Arial, sans-serif;
+            direction: rtl;
+        }
+        
+        .og-container {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .og-content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+            max-width: 800px;
+            padding: 40px;
+        }
+        
+        .og-title {
+            font-size: 64px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .og-subtitle {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .og-features {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .og-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .og-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body>
+    <div class="og-container">
+        <div class="bg-pattern"></div>
+        <div class="og-content">
+            <h1 class="og-title">فني صحي الكويت</h1>
+            <p class="og-subtitle">منصة الكويت للفنيين الصحيين الموثوقة</p>
+            <div class="og-features">
+                <div class="og-feature">
+                    <span class="og-icon"></span>
+                    فنيين مرخصين
+                </div>
+                <div class="og-feature">
+                    <span class="og-icon"></span>
+                    خدمة سريعة
+                </div>
+                <div class="og-feature">
+                    <span class="og-icon"></span>
+                    أسعار مناسبة
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // This can be used to generate actual OG images using tools like Puppeteer
+        console.log('OG Image template ready for capture');
+    </script>
+</body>
+</html>

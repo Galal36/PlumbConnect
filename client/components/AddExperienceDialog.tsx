@@ -1,0 +1,235 @@
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle, Plus } from "lucide-react";
+import { DialogFooter } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+
+interface LocalExperience {
+  id: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string | null;
+  isCurrent: boolean;
+}
+
+interface AddExperienceDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onAdd: (experience: Omit<LocalExperience, "id">) => void;
+}
+
+export default function AddExperienceDialog({
+  open,
+  onOpenChange,
+  onAdd,
+}: AddExperienceDialogProps) {
+  const [experienceData, setExperienceData] = useState({
+    title: "",
+    description: "",
+    startDate: "",
+    endDate: "",
+    isCurrent: false,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async () => {
+    if (
+      !experienceData.title.trim() ||
+      !experienceData.description.trim() ||
+      !experienceData.startDate
+    ) {
+      setError("يرجى ملء جميع الحقول المطلوبة");
+      return;
+    }
+
+    if (!experienceData.isCurrent && !experienceData.endDate) {
+      setError("يرجى تحديد تاريخ الانتهاء أو اختيار 'أعمل حالياً'");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // TODO: Replace with actual API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const newExperience = {
+        title: experienceData.title.trim(),
+        description: experienceData.description.trim(),
+        startDate: experienceData.startDate,
+        endDate: experienceData.isCurrent ? null : experienceData.endDate,
+        isCurrent: experienceData.isCurrent,
+      };
+
+      onAdd(newExperience);
+
+      // Reset form
+      setExperienceData({
+        title: "",
+        description: "",
+        startDate: "",
+        endDate: "",
+        isCurrent: false,
+      });
+
+      onOpenChange(false);
+    } catch (error) {
+      setError("فشل في إضافة الخبرة. يرجى المحاولة مرة أخرى.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setExperienceData({
+      title: "",
+      description: "",
+      startDate: "",
+      endDate: "",
+      isCurrent: false,
+    });
+    setError(null);
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-[500px]" dir="rtl">
+        <DialogHeader>
+          <DialogTitle>إضافة خبرة مهنية جديدة</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4" dir="rtl">
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="space-y-2">
+            <Label htmlFor="exp-title">المسمى الوظيفي</Label>
+            <Input
+              id="exp-title"
+              value={experienceData.title}
+              onChange={(e) =>
+                setExperienceData((prev) => ({
+                  ...prev,
+                  title: e.target.value,
+                }))
+              }
+              className="text-end"
+              dir="rtl"
+              disabled={isLoading}
+              placeholder="مثال: سباك أول - شركة المياه الكويتية"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="exp-description">وصف المهام والإنجازات</Label>
+            <Textarea
+              id="exp-description"
+              value={experienceData.description}
+              onChange={(e) =>
+                setExperienceData((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
+              className="text-end resize-none min-h-[100px]"
+              dir="rtl"
+              disabled={isLoading}
+              placeholder="اكتب وصفاً مفصلاً للمهام التي كنت تقوم بها والإنجازات التي حققتها..."
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="exp-start">تاريخ البداية</Label>
+              <Input
+                id="exp-start"
+                type="date"
+                value={experienceData.startDate}
+                onChange={(e) =>
+                  setExperienceData((prev) => ({
+                    ...prev,
+                    startDate: e.target.value,
+                  }))
+                }
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="exp-end">تاريخ الانتهاء</Label>
+              <Input
+                id="exp-end"
+                type="date"
+                value={experienceData.endDate}
+                onChange={(e) =>
+                  setExperienceData((prev) => ({
+                    ...prev,
+                    endDate: e.target.value,
+                  }))
+                }
+                disabled={isLoading || experienceData.isCurrent}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2 space-x-reverse">
+            <Checkbox
+              id="is-current"
+              checked={experienceData.isCurrent}
+              onCheckedChange={(checked) =>
+                setExperienceData((prev) => ({
+                  ...prev,
+                  isCurrent: checked as boolean,
+                  endDate: checked ? "" : prev.endDate,
+                }))
+              }
+              disabled={isLoading}
+            />
+            <Label htmlFor="is-current" className="text-sm">
+              أعمل حالياً في هذا المنصب
+            </Label>
+          </div>
+
+          <DialogFooter className="flex flex-row-reverse gap-2">
+            <Button
+              onClick={handleSubmit}
+              disabled={
+                isLoading ||
+                !experienceData.title.trim() ||
+                !experienceData.description.trim()
+              }
+            >
+              <Plus className="h-4 w-4 ms-2" />
+              {isLoading ? "جاري الإضافة..." : "إضافة الخبرة"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleClose}
+              disabled={isLoading}
+            >
+              إلغاء
+            </Button>
+          </DialogFooter>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

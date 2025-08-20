@@ -1,0 +1,271 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Tailwind CSS theme
+   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
+   * A different format will require also updating the theme in tailwind.config.ts.
+  */
+  :root {
+    --background: 222 84% 5%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 84% 8%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 84% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 220 100% 60%;
+    --primary-foreground: 222 84% 5%;
+
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 32% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 32% 25%;
+    --input: 217 32% 17%;
+    --ring: 220 100% 60%;
+
+    --radius: 0.5rem;
+
+    /* Premium Kuwaiti cultural colors - Dark Theme */
+    --kuwait-green: 158 64% 52%;
+    --kuwait-blue: 220 100% 60%;
+    --kuwait-gold: 45 86% 65%;
+    --premium-dark: 222 84% 5%;
+    --premium-gray: 215 20% 65%;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 215 25% 6%;
+    --foreground: 215 25% 98%;
+
+    --card: 215 25% 8%;
+    --card-foreground: 215 25% 98%;
+
+    --popover: 215 25% 8%;
+    --popover-foreground: 215 25% 98%;
+
+    --primary: 220 100% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 25% 12%;
+    --secondary-foreground: 215 25% 80%;
+
+    --muted: 215 25% 12%;
+    --muted-foreground: 215 15% 65%;
+
+    --accent: 262 100% 85%;
+    --accent-foreground: 262 80% 15%;
+
+    --destructive: 0 85% 65%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 25% 18%;
+    --input: 215 25% 15%;
+    --ring: 220 100% 60%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Premium Kuwaiti cultural colors */
+    --kuwait-green: 158 64% 62%;
+    --kuwait-blue: 220 100% 60%;
+    --kuwait-gold: 45 86% 68%;
+    --premium-dark: 215 25% 8%;
+    --premium-gray: 215 15% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Cairo", ui-sans-serif, system-ui, sans-serif;
+    direction: rtl;
+    text-align: right;
+  }
+
+  /* Modern RTL support using logical properties */
+
+  /* Global RTL behavior - let Tailwind RTL plugin handle spacing */
+  [dir="rtl"] * {
+    direction: inherit;
+  }
+
+  /* Form elements RTL support */
+  [dir="rtl"] input,
+  [dir="rtl"] textarea,
+  [dir="rtl"] select {
+    direction: rtl;
+    text-align: start;
+  }
+
+  [dir="rtl"] input::placeholder,
+  [dir="rtl"] textarea::placeholder {
+    text-align: start;
+  }
+
+  /* Icon positioning - only flip navigation icons */
+  [dir="rtl"] .nav-icon {
+    transform: scaleX(-1);
+  }
+
+  /* Preserve icon orientation for semantic icons */
+  [dir="rtl"] [data-lucide="phone"],
+  [dir="rtl"] [data-lucide="mail"],
+  [dir="rtl"] [data-lucide="star"],
+  [dir="rtl"] [data-lucide="clock"],
+  [dir="rtl"] [data-lucide="wrench"],
+  [dir="rtl"] [data-lucide="droplets"],
+  [dir="rtl"] [data-lucide="flame"],
+  [dir="rtl"] [data-lucide="map-pin"],
+  [dir="rtl"] [data-lucide="alert-circle"],
+  [dir="rtl"] [data-lucide="message-circle"] {
+    transform: none !important;
+  }
+
+  /* Utility classes for explicit RTL/LTR control */
+  .force-ltr {
+    direction: ltr !important;
+    text-align: left !important;
+  }
+
+  .force-rtl {
+    direction: rtl !important;
+    text-align: right !important;
+  }
+}
+
+@layer components {
+  .premium-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(220 100% 45%) 50%,
+      hsl(262 100% 60%) 100%
+    );
+  }
+
+  .premium-card-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(217 32% 12%) 0%,
+      hsl(217 32% 15%) 100%
+    );
+    box-shadow:
+      0 8px 32px -4px hsl(222 84% 5% / 0.3),
+      0 0 0 1px hsl(217 32% 25% / 0.2);
+  }
+
+  .premium-text-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(262 100% 60%) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-effect {
+    backdrop-filter: blur(16px);
+    background: hsl(222 84% 8% / 0.9);
+    border: 1px solid hsl(217 32% 25% / 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .glass-effect:hover {
+    background: hsl(222 84% 8% / 0.95);
+    border: 1px solid hsl(217 32% 35% / 0.4);
+  }
+
+  /* Smooth scrolling for better UX */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Scroll margin for testimonials section to account for sticky navbar */
+  #testimonials {
+    scroll-margin-top: 100px;
+  }
+
+  /* Professional button hover effects */
+  .btn-hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Fade in animation for content */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  /* Pulse animation for trust indicators */
+  @keyframes pulse-subtle {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
