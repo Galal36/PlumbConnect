@@ -1,0 +1,24 @@
+Super users:
+{
+  "email": "temp-1@example.com",
+  "password": "admin123"
+}
+
+........................................................................................................
+Normal users:
+Ahmed Alaa user
+{
+ 
+ "email": "client@example.com",
+ "password": "clientpass123"
+   
+}
+
+
+
+plumber users:
+{
+  "email": "fahad.plumber@example.com",
+  "password": "plumber123"
+}
+

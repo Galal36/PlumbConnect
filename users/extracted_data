@@ -1,0 +1,254 @@
+### models.py
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.db import models
+from django.utils import timezone
+
+
+class Location(models.Model):
+    city = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.city
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, phone, name, password=None, **extra_fields):
+        if not phone:
+            raise ValueError("The Phone number must be set")
+        user = self.model(phone=phone, name=name, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, phone, name, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('role', 'admin')
+
+        return self.create_user(phone, name, password, **extra_fields)
+
+
+class User(AbstractBaseUser, PermissionsMixin):
+    ROLE_CHOICES = (
+        ('admin', 'Admin'),
+        ('moderator', 'Moderator'),
+        ('plumber', 'Plumber'),
+        ('client', 'Client'),
+    )
+
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('banned', 'Banned'),
+    )
+
+    name = models.CharField(max_length=255)
+    email = models.EmailField(blank=True, null=True, unique=True)
+    phone = models.CharField(max_length=15, unique=True)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='client')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    image = models.ImageField(upload_to='plumber_images/', null=True, blank=True)
+
+    is_active = models.BooleanField(default=True)  # For login permissions only
+    is_staff = models.BooleanField(default=False) # For admin access to Django admin
+    date_joined = models.DateTimeField(default=timezone.now)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name']
+
+    def __str__(self):
+        return f"{self.name} ({self.phone})"
+
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+        ordering = ['-date_joined']
+### views.py
+from rest_framework import viewsets, permissions
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .models import User, Location
+from .serializers import UserSerializer, LocationSerializer, CustomTokenObtainPairSerializer
+from .permissions import IsAdminOrOwner
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]  # تعديل لاحقًا حسب الأدوار
+
+class LocationViewSet(viewsets.ModelViewSet):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'destroy']:
+            return [IsAdminOrOwner()]
+        return [permissions.IsAuthenticated()]
+    
+### serializers.py
+from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import User, Location
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+from rest_framework import serializers
+from .models import User  # make sure the custom User model is imported if customized
+
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = ['id', 'city']
+
+class UserSerializer(serializers.ModelSerializer):
+    location = LocationSerializer(read_only=True)
+    location_id = serializers.PrimaryKeyRelatedField(
+        queryset=Location.objects.all(),
+        source='location',
+        write_only=True
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'name', 'email', 'phone', 'password', 'location', 'location_id',
+            'role', 'status'
+        ]
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'email': {'required': False, 'allow_null': True, 'allow_blank': True},
+            'name': {'required': True},
+            'image': {'required': False} # The image is not always required,
+
+        }
+
+
+
+    def validate_email(self, value):
+        """تحقق أن الإيميل غير مكرر إذا تم إدخاله"""
+        if value:
+            if User.objects.filter(email=value).exists():
+                raise serializers.ValidationError(_("البريد الإلكتروني مستخدم بالفعل."))
+        return value
+
+    def validate_name(self, value):
+        """الاسم مطلوب ولا يمكن أن يكون فارغًا"""
+        if not value.strip():
+            raise serializers.ValidationError(_("الاسم لا يمكن أن يكون فارغًا."))
+        return value
+    
+    def validate_phone(self, value):
+        if not value.isdigit() or len(value) < 8:
+            raise serializers.ValidationError(_("رقم الهاتف غير صالح."))
+        return value
+
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+    
+
+    def to_representation(self, instance):
+        """Controls the output (what is shown to the user)."""
+        representation = super().to_representation(instance)
+        # If the user is not a plumber, remove the image field from the response.
+        if instance.role != 'plumber':
+            representation.pop('image', None)
+        return representation
+
+    def validate(self, data):
+        """
+        Controls the input (what is accepted from the user).
+        Called during user creation and updates.
+        """
+        # If an image is provided but the role is not 'plumber', raise an error.
+        if 'image' in data and data.get('image') is not None:
+            # Check the role from the input data or from the existing user instance
+            role = data.get('role') if 'role' in data else getattr(self.instance, 'role', None)
+            if role != 'plumber':
+                raise serializers.ValidationError({"image": "Only users with the 'plumber' role can have an image."})
+        return data
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username_field = 'email'  # ensures DRF uses email as the identifier
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        password = attrs.get("password")
+
+        user = authenticate(email=email, password=password)
+        if not user:
+            raise serializers.ValidationError("Invalid email or password")
+
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+### urls.py
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+from .views import UserViewSet, LocationViewSet, CustomTokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
+
+router = DefaultRouter()
+router.register('users', UserViewSet)
+router.register('locations', LocationViewSet)
+
+urlpatterns = [
+    path('', include(router.urls)),
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+]
+### permissions.py
+from rest_framework import permissions
+
+class IsAdmin(permissions.BasePermission):
+    """يسمح فقط للمستخدمين الذين لديهم role = 'admin'"""
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role == 'admin'
+
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    """
+    يسمح للإداري بالتعديل أو الحذف، ويسمح للمستخدم العادي فقط بالقراءة (GET)
+    """
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user.is_authenticated and request.user.role == 'admin'
+
+
+class IsAdminOrOwner(permissions.BasePermission):
+    """
+    يسمح للإداري أو صاحب الحساب نفسه بالتعديل أو الحذف
+    """
+    def has_object_permission(self, request, view, obj):
+        return request.user.role == 'admin' or obj == request.user
+### apps.py
+from django.apps import AppConfig
+
+
+class UsersConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'users'
+### admins.py
+from django.contrib import admin
+
+# Register your models here.

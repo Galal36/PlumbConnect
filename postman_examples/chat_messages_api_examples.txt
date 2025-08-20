@@ -1,0 +1,135 @@
+# PlumbingConnect API - Chat Messages App Examples for Postman
+
+# Base URL: http://localhost:8000/api/chat-messages/
+# Headers for all requests:
+# Authorization: Bearer <YOUR_JWT_TOKEN>
+# Content-Type: application/json (for POST/PATCH)
+# Accept-Language: ar (Optional, for Arabic responses)
+
+---
+
+# 1. Get Messages by Chat ID (عرض رسائل محادثة معينة)
+# Description: Retrieve messages for a specific chat.
+# Method: GET
+# URL: http://localhost:8000/api/chat-messages/1/messages/
+# Query Params:
+#   page: 1 (Optional, for pagination)
+#   page_size: 20 (Optional, for pagination)
+#   message_type: text/image/system (Optional, to filter by message type)
+# Example Response (Status: 200 OK):
+# [
+#     {
+#         "id": 1,
+#         "message": "مرحبا، أحتاج إلى سباك لإصلاح مشكلة في الحمام",
+#         "image": null,
+#         "message_type": "text",
+#         "chat": 1,
+#         "sender": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#         "receiver": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#         "sent_at": "2025-08-05T21:00:00Z",
+#         "is_read": false,
+#         "sender_name": "محمد أحمد",
+#         "receiver_name": "علي السباك",
+#         "link": null
+#     }
+# ]
+
+---
+
+# 2. Send a New Message (إرسال رسالة جديدة)
+# Description: Send a new message within an existing chat.
+# Method: POST
+# URL: http://localhost:8000/api/chat-messages/
+# Request Body (JSON):
+# {
+#     "chat_id": 1,
+#     "message": "تمام، سأرسل لك موقعي الآن.",
+#     "message_type": "text",
+#     "link": null
+# }
+# Example Response (Status: 201 Created): (New message object)
+
+---
+
+# 3. Mark Message as Read (تحديد رسالة كمقروءة)
+# Description: Mark a specific message as read. Only the receiver can mark a message as read.
+# Method: PATCH
+# URL: http://localhost:8000/api/chat-messages/1/mark-as-read/
+# Request Body: (Empty or {})
+# Example Response (Status: 200 OK):
+# {
+#     "status": "message marked as read"
+# }
+
+---
+
+# 4. Soft Delete a Message (حذف رسالة بشكل مؤقت)
+# Description: Mark a message as deleted (it won't be shown in lists but remains in DB). Only the sender can soft delete their own message.
+# Method: PATCH
+# URL: http://localhost:8000/api/chat-messages/1/soft-delete/
+# Request Body: (Empty or {})
+# Example Response (Status: 200 OK):
+# {
+#     "status": "message deleted"
+# }
+
+---
+
+# 5. Get Unread Messages Count (الحصول على عدد الرسائل غير المقروءة)
+# Description: Get the total count of unread messages for the authenticated user.
+# Method: GET
+# URL: http://localhost:8000/api/chat-messages/unread-count/
+# Example Response (Status: 200 OK):
+# {
+#     "unread_count": 5
+# }
+
+---
+
+# 6. Get Unread Messages (عرض الرسائل غير المقروءة)
+# Description: Retrieve a list of all unread messages for the authenticated user.
+# Method: GET
+# URL: http://localhost:8000/api/chat-messages/unread/
+# Example Response (Status: 200 OK): (List of unread messages)
+
+---
+
+# 7. Mark All Messages as Read (تحديد جميع الرسائل كمقروءة)
+# Description: Mark all unread messages for the authenticated user as read.
+# Method: PATCH
+# URL: http://localhost:8000/api/chat-messages/mark-all-as-read/
+# Request Body: (Empty or {})
+# Example Response (Status: 200 OK):
+# {
+#     "status": "all messages marked as read",
+#     "updated_count": 5
+# }
+
+---
+
+# 8. Get Message Detail (عرض تفاصيل رسالة معينة)
+# Description: Retrieve details of a specific message by its ID.
+# Method: GET
+# URL: http://localhost:8000/api/chat-messages/1/
+# Example Response (Status: 200 OK): (Message object)
+
+---
+
+# 9. Export Chat Messages to CSV (تصدير رسائل المحادثة إلى CSV)
+# Description: Export all messages of a specific chat to a CSV file.
+# Method: GET
+# URL: http://localhost:8000/api/chat-messages/1/export-csv/
+# Example Response (Status: 200 OK): (CSV file download)
+
+---
+
+# 10. Send System Message (إرسال رسالة نظام) - (Admin Only)
+# Description: Send a system message to a specific chat.
+# Method: POST
+# URL: http://localhost:8000/api/chat-messages/send-system-message/1/
+# Request Body (JSON):
+# {
+#     "message": "تم تحديث حالة طلبك إلى 'قيد التنفيذ'.",
+#     "message_type": "system"
+# }
+# Example Response (Status: 201 Created): (New system message object)

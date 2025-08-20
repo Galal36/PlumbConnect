@@ -1,0 +1,16 @@
+django
+djangorestframework-simplejwt
+psycopg2
+pillow
+django-filter
+six
+google-generativeai
+python-dotenv
+channels
+channels-redis
+daphne
+django-cors-headers
+djangorestframework
+django-cors-headers
+channels
+channels-redis

@@ -1,0 +1,38 @@
+"""
+URL configuration for PlumbConnect project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/4.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+# plum_connect/urls.py
+
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('users.urls')),  # المسارات الخاصة بالمستخدمين
+    path('api/articles/', include('articles.urls')),
+    path('api/', include('posts.urls')),
+    path('api/reviews/', include('reviews.api.urls')),
+    path('api/services/', include('services.api.urls')),
+    path('api/', include('experiences.api.urls')),
+    path('api/', include('reports.api.urls')),
+    path('api/chats/', include('chats.urls')),
+    path('api/chat-messages/', include('chat_messages.urls')),
+    path('api/complaints/', include('complaints.urls')),
+    path('api/notifications/', include('notifications.urls')),
+    path('api/chatbot/', include('chatbot.urls')),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

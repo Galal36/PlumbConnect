@@ -1,0 +1,244 @@
+# PlumbingConnect API - Chatbot App Examples for Postman
+
+# Base URL: http://localhost:8000/api/chatbot/
+# Headers for all requests:
+# Authorization: Bearer <YOUR_JWT_TOKEN>
+# Content-Type: application/json (for POST/PATCH)
+# Accept-Language: ar (Optional, for Arabic responses)
+
+---
+
+# 1. Start New Chatbot Conversation (بدء محادثة جديدة مع الشات بوت)
+# Description: Start a new conversation with the AI chatbot for plumbing advice.
+# Method: POST
+# URL: http://localhost:8000/api/chatbot/conversations/
+# Request Body (JSON):
+# {
+#     "topic": "plumbing_advice",
+#     "initial_message": "مرحبا، أحتاج مساعدة في مشكلة سباكة"
+# }
+# Example Response (Status: 201 Created):
+# {
+#     "id": 1,
+#     "session_id": "550e8400-e29b-41d4-a716-446655440000",
+#     "user": { "id": 1, "name": "محمد أحمد", "role": "client" },
+#     "topic": "plumbing_advice",
+#     "is_active": true,
+#     "created_at": "2025-08-05T21:00:00Z",
+#     "last_message": {
+#         "id": 1,
+#         "message": "مرحبا! أنا مساعد السباكة الذكي. كيف يمكنني مساعدتك اليوم؟",
+#         "is_from_user": false,
+#         "timestamp": "2025-08-05T21:00:00Z",
+#         "ai_model_used": "gpt-4"
+#     }
+# }
+
+---
+
+# 2. Send Message to Chatbot (إرسال رسالة للشات بوت)
+# Description: Send a message to the AI chatbot and get a response.
+# Method: POST
+# URL: http://localhost:8000/api/chatbot/conversations/1/messages/
+# Request Body (JSON):
+# {
+#     "message": "لدي مشكلة في الحنفية، الماء لا يتوقف عن التسرب"
+# }
+# Example Response (Status: 201 Created):
+# {
+#     "user_message": {
+#         "id": 2,
+#         "message": "لدي مشكلة في الحنفية، الماء لا يتوقف عن التسرب",
+#         "is_from_user": true,
+#         "timestamp": "2025-08-05T21:05:00Z",
+#         "ai_model_used": null
+#     },
+#     "bot_response": {
+#         "id": 3,
+#         "message": "تسرب الحنفية مشكلة شائعة. إليك بعض الخطوات البسيطة لحلها:\n\n1. أغلق صمام المياه الرئيسي\n2. تحقق من الحلقة المطاطية (الجوان)\n3. إذا كانت تالفة، استبدلها\n4. تأكد من إحكام ربط الأجزاء\n\nإذا استمرت المشكلة، قد تحتاج لاستبدال الحنفية بالكامل. هل تريد المزيد من التفاصيل حول أي من هذه الخطوات؟",
+#         "is_from_user": false,
+#         "timestamp": "2025-08-05T21:05:30Z",
+#         "ai_model_used": "gpt-4",
+#         "confidence_score": 0.95
+#     }
+# }
+
+---
+
+# 3. Get Conversation History (عرض تاريخ المحادثة)
+# Description: Retrieve all messages in a specific chatbot conversation.
+# Method: GET
+# URL: http://localhost:8000/api/chatbot/conversations/1/messages/
+# Query Params:
+#   page: 1 (Optional, for pagination)
+#   page_size: 20 (Optional, for pagination)
+# Example Response (Status: 200 OK):
+# [
+#     {
+#         "id": 1,
+#         "message": "مرحبا! أنا مساعد السباكة الذكي. كيف يمكنني مساعدتك اليوم؟",
+#         "is_from_user": false,
+#         "timestamp": "2025-08-05T21:00:00Z",
+#         "ai_model_used": "gpt-4",
+#         "confidence_score": null
+#     },
+#     {
+#         "id": 2,
+#         "message": "لدي مشكلة في الحنفية، الماء لا يتوقف عن التسرب",
+#         "is_from_user": true,
+#         "timestamp": "2025-08-05T21:05:00Z",
+#         "ai_model_used": null,
+#         "confidence_score": null
+#     }
+# ]
+
+---
+
+# 4. Get My Conversations (عرض محادثاتي مع الشات بوت)
+# Description: Retrieve a list of all chatbot conversations for the authenticated user.
+# Method: GET
+# URL: http://localhost:8000/api/chatbot/conversations/
+# Query Params:
+#   is_active: true/false (Optional, to filter active/inactive conversations)
+#   topic: plumbing_advice/emergency_help/general_inquiry (Optional, to filter by topic)
+# Example Response (Status: 200 OK):
+# [
+#     {
+#         "id": 1,
+#         "session_id": "550e8400-e29b-41d4-a716-446655440000",
+#         "user": { "id": 1, "name": "محمد أحمد", "role": "client" },
+#         "topic": "plumbing_advice",
+#         "is_active": true,
+#         "created_at": "2025-08-05T21:00:00Z",
+#         "message_count": 5,
+#         "last_message": {
+#             "message": "شكرا لك، هذا مفيد جداً!",
+#             "timestamp": "2025-08-05T21:15:00Z",
+#             "is_from_user": true
+#         }
+#     }
+# ]
+
+---
+
+# 5. End Conversation (إنهاء المحادثة)
+# Description: Mark a chatbot conversation as inactive/ended.
+# Method: PATCH
+# URL: http://localhost:8000/api/chatbot/conversations/1/end/
+# Request Body: (Empty or {})
+# Example Response (Status: 200 OK):
+# {
+#     "status": "conversation ended",
+#     "conversation_id": 1,
+#     "ended_at": "2025-08-05T21:20:00Z"
+# }
+
+---
+
+# 6. Get Conversation Detail (عرض تفاصيل محادثة معينة)
+# Description: Retrieve details of a specific chatbot conversation.
+# Method: GET
+# URL: http://localhost:8000/api/chatbot/conversations/1/
+# Example Response (Status: 200 OK):
+# {
+#     "id": 1,
+#     "session_id": "550e8400-e29b-41d4-a716-446655440000",
+#     "user": { "id": 1, "name": "محمد أحمد", "role": "client" },
+#     "topic": "plumbing_advice",
+#     "is_active": true,
+#     "created_at": "2025-08-05T21:00:00Z",
+#     "message_count": 5,
+#     "total_tokens_used": 1250,
+#     "last_activity": "2025-08-05T21:15:00Z"
+# }
+
+---
+
+# 7. Get Emergency Plumbing Help (الحصول على مساعدة طوارئ سباكة)
+# Description: Get immediate AI assistance for plumbing emergencies.
+# Method: POST
+# URL: http://localhost:8000/api/chatbot/emergency-help/
+# Request Body (JSON):
+# {
+#     "emergency_type": "water_leak",
+#     "description": "انفجار في الأنبوب الرئيسي، الماء يغمر المنزل"
+# }
+# Example Response (Status: 200 OK):
+# {
+#     "emergency_response": {
+#         "immediate_steps": [
+#             "أغلق صمام المياه الرئيسي فوراً",
+#             "أغلق الكهرباء في المنطقة المتضررة",
+#             "ابعد الأثاث والأجهزة عن المياه",
+#             "اتصل بسباك طوارئ على الفور"
+#         ],
+#         "safety_warnings": [
+#             "لا تلمس أي أجهزة كهربائية بيدين مبللتين",
+#             "تجنب المشي في المياه العميقة"
+#         ],
+#         "recommended_plumbers": [
+#             {
+#                 "id": 5,
+#                 "name": "أحمد السباك",
+#                 "phone": "+96512345678",
+#                 "emergency_available": true,
+#                 "rating": 4.8
+#             }
+#         ]
+#     },
+#     "conversation_id": 2,
+#     "ai_confidence": 0.98
+# }
+
+---
+
+# 8. Rate Chatbot Response (تقييم إجابة الشات بوت)
+# Description: Rate the quality of a chatbot response.
+# Method: POST
+# URL: http://localhost:8000/api/chatbot/messages/3/rate/
+# Request Body (JSON):
+# {
+#     "rating": 5,
+#     "feedback": "إجابة مفيدة ومفصلة"
+# }
+# Example Response (Status: 200 OK):
+# {
+#     "status": "rating submitted",
+#     "message_id": 3,
+#     "rating": 5,
+#     "feedback": "إجابة مفيدة ومفصلة"
+# }
+
+---
+
+# 9. Get Chatbot Statistics (إحصائيات الشات بوت) - (Admin Only)
+# Description: Get usage statistics for the chatbot system.
+# Method: GET
+# URL: http://localhost:8000/api/chatbot/admin/statistics/
+# Example Response (Status: 200 OK):
+# {
+#     "total_conversations": 150,
+#     "active_conversations": 12,
+#     "total_messages": 1250,
+#     "average_conversation_length": 8.3,
+#     "most_common_topics": [
+#         {"topic": "plumbing_advice", "count": 85},
+#         {"topic": "emergency_help", "count": 45},
+#         {"topic": "general_inquiry", "count": 20}
+#     ],
+#     "average_response_time": "2.3s",
+#     "user_satisfaction_rating": 4.6
+# }
+
+---
+
+# 10. Clear Conversation History (مسح تاريخ المحادثة)
+# Description: Delete all messages in a specific conversation.
+# Method: DELETE
+# URL: http://localhost:8000/api/chatbot/conversations/1/clear/
+# Example Response (Status: 200 OK):
+# {
+#     "status": "conversation history cleared",
+#     "conversation_id": 1,
+#     "deleted_messages_count": 8
+# }

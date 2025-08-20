@@ -1,0 +1,153 @@
+# PlumbingConnect API - Chats App Examples for Postman
+
+# Base URL: http://localhost:8000/api/chats/
+# Headers for all requests:
+# Authorization: Bearer <YOUR_JWT_TOKEN>
+# Content-Type: application/json (for POST/PATCH)
+# Accept-Language: ar (Optional, for Arabic responses)
+
+---
+
+# 1. Get My Chats (عرض جميع محادثاتي)
+# Description: Retrieve a list of all chats the authenticated user is part of.
+# Method: GET
+# URL: http://localhost:8000/api/chats/
+# Query Params:
+#   page: 1 (Optional, for pagination)
+#   page_size: 20 (Optional, for pagination)
+#   is_active: true/false (Optional, to filter active/inactive chats)
+#   is_archived: true/false (Optional, to filter archived/unarchived chats)
+# Example Response (Status: 200 OK):
+# [
+#     {
+#         "id": 1,
+#         "sender": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#         "receiver": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#         "created_at": "2025-08-05T21:00:00Z",
+#         "updated_at": "2025-08-05T21:30:00Z",
+#         "is_active": true,
+#         "is_archived": false,
+#         "last_message": { "id": 1, "message": "مرحبا، أحتاج إلى سباك...", "sent_at": "2025-08-05T21:30:00Z", "is_read": false, "message_type": "text", "link": null },
+#         "unread_count": 1
+#     }
+# ]
+
+---
+
+# 2. Create a New Chat (إنشاء محادثة جديدة)
+# Description: Start a new chat with another user. If a chat already exists, it will be returned.
+# Method: POST
+# URL: http://localhost:8000/api/chats/
+# Request Body (JSON):
+# {
+#     "receiver_id": 2,
+#     "is_admin_created": false
+# }
+# Example Response (Status: 201 Created or 200 OK if chat exists):
+# {
+#     "id": 1,
+#     "sender": { "id": 1, "name": "محمد أحمد", "role": "client", "image": null, "is_verified": false },
+#     "receiver": { "id": 2, "name": "علي السباك", "role": "plumber", "image": "http://localhost:8000/media/plumber_images/ali.jpg", "is_verified": true },
+#     "created_at": "2025-08-05T21:00:00Z",
+#     "updated_at": "2025-08-05T21:00:00Z",
+#     "is_active": true,
+#     "is_archived": false,
+#     "last_message": null,
+#     "unread_count": 0
+# }
+
+---
+
+# 3. Get Chat Detail (عرض تفاصيل محادثة معينة)
+# Description: Retrieve details of a specific chat by its ID.
+# Method: GET
+# URL: http://localhost:8000/api/chats/1/
+# Example Response (Status: 200 OK): (Similar to chat object in list)
+
+---
+
+# 4. Archive Chat (أرشفة المحادثة)
+# Description: Mark a chat as 'archived'.
+# Method: PATCH
+# URL: http://localhost:8000/api/chats/1/archive/
+# Request Body: (Empty or {})
+# Example Response (Status: 200 OK): (Chat object with is_archived: true)
+
+---
+
+# 5. Unarchive Chat (إلغاء أرشفة المحادثة)
+# Description: Mark a chat as 'unarchived'.
+# Method: PATCH
+# URL: http://localhost:8000/api/chats/1/unarchive/
+# Request Body: (Empty or {})
+# Example Response (Status: 200 OK): (Chat object with is_archived: false)
+
+---
+
+# 6. Search Chats (البحث في المحادثات)
+# Description: Search chats by sender/receiver name.
+# Method: GET
+# URL: http://localhost:8000/api/chats/search/?q=علي
+# Example Response (Status: 200 OK): (List of matching chats)
+
+---
+
+# 7. Get Chat Count (عدد المحادثات)
+# Description: Get the total count of chats for the authenticated user.
+# Method: GET
+# URL: http://localhost:8000/api/chats/count/
+# Example Response (Status: 200 OK):
+# {
+#     "total_chats_count": 5
+# }
+
+---
+
+# 8. Get Active Chats (عرض المحادثات النشطة)
+# Description: Retrieve a list of active and unarchived chats for the authenticated user.
+# Method: GET
+# URL: http://localhost:8000/api/chats/active/
+# Example Response (Status: 200 OK): (List of active chats)
+
+---
+
+# 9. Get Archived Chats (عرض المحادثات المؤرشفة)
+# Description: Retrieve a list of archived chats for the authenticated user.
+# Method: GET
+# URL: http://localhost:8000/api/chats/archived/
+# Example Response (Status: 200 OK): (List of archived chats)
+
+---
+
+# 10. Mark Chat as Read (تحديد محادثة كمقروءة)
+# Description: Mark all messages in a specific chat as read for the authenticated user.
+# Method: PATCH
+# URL: http://localhost:8000/api/chats/1/mark-as-read/
+# Example Response (Status: 200 OK):
+# {
+#     "status": "chat marked as read",
+#     "updated_count": 3
+# }
+
+---
+
+# 11. Create Chat with Specific User (إنشاء محادثة مع مستخدم معين)
+# Description: Create a chat directly with a user by their ID.
+# Method: POST
+# URL: http://localhost:8000/api/chats/with-user/2/
+# Request Body: (Empty or {})
+# Example Response (Status: 201 Created or 200 OK if chat exists): (Similar to new chat response)
+
+---
+
+# 12. Admin Create Chat (إنشاء محادثة بواسطة المسؤول) - (Admin Only)
+# Description: Admin can create a chat between any two users.
+# Method: POST
+# URL: http://localhost:8000/api/chats/admin-create/
+# Request Body (JSON):
+# {
+#     "receiver_id": 2,
+#     "sender_id": 1,
+#     "is_admin_created": true
+# }
+# Example Response (Status: 201 Created): (Similar to new chat response)

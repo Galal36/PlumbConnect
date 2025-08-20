@@ -1,0 +1,1498 @@
+{
+	"info": {
+		"_postman_id": "6fb2820f-bb14-46c0-8d3e-6b6e21b77b20",
+		"name": "Plumber",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29197106"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjcxNzA4LCJpYXQiOjE3NDg2NzE0MDgsImp0aSI6ImE4MDlhNDljOThhODRkOTQ4MTU1MGQ2NGUyYzZiMmM4IiwidXNlcl9pZCI6MSwiZW1haWwiOiJhYmRoc3JhZ0BnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4ifQ.kGnoAsC0T9Upyfj-6ErEB-61YyazN98N-m09oMs6cQE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"client@example.com\",\n \"password\": \"clientpass123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/token/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjcxNzA4LCJpYXQiOjE3NDg2NzE0MDgsImp0aSI6ImE4MDlhNDljOThhODRkOTQ4MTU1MGQ2NGUyYzZiMmM4IiwidXNlcl9pZCI6MSwiZW1haWwiOiJhYmRoc3JhZ0BnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4ifQ.kGnoAsC0T9Upyfj-6ErEB-61YyazN98N-m09oMs6cQE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Abdallah\",\n  \"email\": \"abdallah@example.com\",\n  \"phone\": \"01234567890\",\n  \"password\": \"securepassword123\",\n  \"location\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add experience",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjcxNzA4LCJpYXQiOjE3NDg2NzE0MDgsImp0aSI6ImE4MDlhNDljOThhODRkOTQ4MTU1MGQ2NGUyYzZiMmM4IiwidXNlcl9pZCI6MSwiZW1haWwiOiJhYmRoc3JhZ0BnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4ifQ.kGnoAsC0T9Upyfj-6ErEB-61YyazN98N-m09oMs6cQE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Senior Developer\",\n  \"description\": \"Worked on backend systems\",\n  \"start_date\": \"2021-01-01\",\n  \"end_date\": \"2023-12-31\",\n  \"user\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/experiences/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"experiences",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all experiences of the Whole system",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/experiences",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"experiences"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "return a specific experience",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/experiences/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"experiences",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit experience",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjYxNjg0LCJpYXQiOjE3NTQyNjEzODQsImp0aSI6IjA5ZmUwOTllNzdmZjRiMDhiZTZiYmY1ZDQ5ZGMwODRiIiwidXNlcl9pZCI6MX0.0eTguwi_oo-ayJGI4iwRF0aUpBrWHascqeolwwqBluY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Updated title\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/experiences/3/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"experiences",
+						"3",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete specific experience",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjYxNzk5LCJpYXQiOjE3NTQyNjE0OTksImp0aSI6IjVjOGVmZGY1MWFjYTRlYzE4ZThiYWE5MWQxNzk4ZDkxIiwidXNlcl9pZCI6MX0.SyXfSYrlvuvTfG6EkQDL9U915DOz1_J3ITI_z4dhhl4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/experiences/2/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"experiences",
+						"2",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all experiences of Auth user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjYyMzM3LCJpYXQiOjE3NTQyNjIwMzcsImp0aSI6ImRhMTViNjk1NWVhOTQzNzk5Y2QyNjNhMzhhZGM2OTU2IiwidXNlcl9pZCI6MX0.P_j4v9OzHpJmZrm4cElROZBpdEl8VDh086YGeit74LE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/my-experiences/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"my-experiences",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all experiences of specific user using his ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjYyMzM3LCJpYXQiOjE3NTQyNjIwMzcsImp0aSI6ImRhMTViNjk1NWVhOTQzNzk5Y2QyNjNhMzhhZGM2OTU2IiwidXNlcl9pZCI6MX0.P_j4v9OzHpJmZrm4cElROZBpdEl8VDh086YGeit74LE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/user-experiences/1/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"user-experiences",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post report to a Post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY0MjY2LCJpYXQiOjE3NTQyNjM5NjYsImp0aSI6IjFiYmJmMzc2NzUyMDQxOWZiMjY2OWU0NTZkYzdkNTlkIiwidXNlcl9pZCI6MX0.g8Xt6T4bvczJo_pJ02hFC2r0WdMtQsoxu2h_rgZWY-A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"This post is inappropriate\",\n  \"content_type\": \"post\",\n  \"object_id\": 1\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post a report to a comment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY0MjY2LCJpYXQiOjE3NTQyNjM5NjYsImp0aSI6IjFiYmJmMzc2NzUyMDQxOWZiMjY2OWU0NTZkYzdkNTlkIiwidXNlcl9pZCI6MX0.g8Xt6T4bvczJo_pJ02hFC2r0WdMtQsoxu2h_rgZWY-A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"Spam comment\",\n  \"content_type\": \"comment\",\n  \"object_id\": 3\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post a report to a comment_reply",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY0MjY2LCJpYXQiOjE3NTQyNjM5NjYsImp0aSI6IjFiYmJmMzc2NzUyMDQxOWZiMjY2OWU0NTZkYzdkNTlkIiwidXNlcl9pZCI6MX0.g8Xt6T4bvczJo_pJ02hFC2r0WdMtQsoxu2h_rgZWY-A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"Toxic reply\",\n  \"content_type\": \"comment_reply\",\n  \"object_id\": 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all reports of auth user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY0MjY2LCJpYXQiOjE3NTQyNjM5NjYsImp0aSI6IjFiYmJmMzc2NzUyMDQxOWZiMjY2OWU0NTZkYzdkNTlkIiwidXNlcl9pZCI6MX0.g8Xt6T4bvczJo_pJ02hFC2r0WdMtQsoxu2h_rgZWY-A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"Toxic reply\",\n  \"content_type\": \"comment_reply\",\n  \"object_id\": 5\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/my-reports/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						"my-reports",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get reports of specific post",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY0MjY2LCJpYXQiOjE3NTQyNjM5NjYsImp0aSI6IjFiYmJmMzc2NzUyMDQxOWZiMjY2OWU0NTZkYzdkNTlkIiwidXNlcl9pZCI6MX0.g8Xt6T4bvczJo_pJ02hFC2r0WdMtQsoxu2h_rgZWY-A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"Toxic reply\",\n  \"content_type\": \"comment_reply\",\n  \"object_id\": 5\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/post/1/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						"post",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get reports of specific comment",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY0MjY2LCJpYXQiOjE3NTQyNjM5NjYsImp0aSI6IjFiYmJmMzc2NzUyMDQxOWZiMjY2OWU0NTZkYzdkNTlkIiwidXNlcl9pZCI6MX0.g8Xt6T4bvczJo_pJ02hFC2r0WdMtQsoxu2h_rgZWY-A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"Toxic reply\",\n  \"content_type\": \"comment_reply\",\n  \"object_id\": 5\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/comment/3/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						"comment",
+						"3",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get reports of specific comment_reply",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY0OTkwLCJpYXQiOjE3NTQyNjQ2OTAsImp0aSI6ImMyMDM2N2MzNWUzMTQzYjM5ZDFlMmYwYzE4ZDBiYTM1IiwidXNlcl9pZCI6MX0.0NStnIVy5jG0r6Z6kACAXhzshGnwFJDX3uzdiTmP5G8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"Toxic reply\",\n  \"content_type\": \"comment_reply\",\n  \"object_id\": 5\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/reply-comment/5/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						"reply-comment",
+						"5",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all reports",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY1NDgzLCJpYXQiOjE3NTQyNjUxODMsImp0aSI6ImU2ZDcxOTZkZWNiYTRiZWJiY2RkZThhMGFiYzRlZmQ0IiwidXNlcl9pZCI6MX0.A6KOweAjxAqd-DBGYibaDWvG0gKHJHitJYuGGxvj-xs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"Toxic reply\",\n  \"content_type\": \"comment_reply\",\n  \"object_id\": 5\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "return specific report using it's ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY1NDgzLCJpYXQiOjE3NTQyNjUxODMsImp0aSI6ImU2ZDcxOTZkZWNiYTRiZWJiY2RkZThhMGFiYzRlZmQ0IiwidXNlcl9pZCI6MX0.A6KOweAjxAqd-DBGYibaDWvG0gKHJHitJYuGGxvj-xs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"Toxic reply\",\n  \"content_type\": \"comment_reply\",\n  \"object_id\": 5\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/2/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						"2",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete specific report using it's ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY1NDgzLCJpYXQiOjE3NTQyNjUxODMsImp0aSI6ImU2ZDcxOTZkZWNiYTRiZWJiY2RkZThhMGFiYzRlZmQ0IiwidXNlcl9pZCI6MX0.A6KOweAjxAqd-DBGYibaDWvG0gKHJHitJYuGGxvj-xs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"Toxic reply\",\n  \"content_type\": \"comment_reply\",\n  \"object_id\": 5\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/2/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						"2",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit specific report",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjY1Nzk2LCJpYXQiOjE3NTQyNjU0OTYsImp0aSI6ImZhZDI1MDgyOWZhNDQwZDg5ZWE4NWYyYTZjZDFmNTAxIiwidXNlcl9pZCI6MX0.e0guADmecdbwsehoudvjc7ndJ14IV-DRevDQhcHPrXw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reason\": \"Updated reason: This content violates community guidelines.\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reports/1/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reports",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all reviews in the system",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjcxNTkyLCJpYXQiOjE3NTQyNzEyOTIsImp0aSI6IjYzYzRiZDlkNjc3MDQyYmJiNWEyNTI1YjE4OTlhOGEzIiwidXNlcl9pZCI6Mn0.-tk4dpXYloccFfCZ6WPqnHmS6DBsgCcZMBfRL0C97mc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"client@example.com\",\n \"password\": \"clientpass123\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reviews/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reviews",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post a review on someone",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjcxNTkyLCJpYXQiOjE3NTQyNzEyOTIsImp0aSI6IjYzYzRiZDlkNjc3MDQyYmJiNWEyNTI1YjE4OTlhOGEzIiwidXNlcl9pZCI6Mn0.-tk4dpXYloccFfCZ6WPqnHmS6DBsgCcZMBfRL0C97mc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"rate\": 4,\n  \"description\": \"ممتاز\",\n  \"receiver\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reviews/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reviews",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get specific review using ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjcxNTkyLCJpYXQiOjE3NTQyNzEyOTIsImp0aSI6IjYzYzRiZDlkNjc3MDQyYmJiNWEyNTI1YjE4OTlhOGEzIiwidXNlcl9pZCI6Mn0.-tk4dpXYloccFfCZ6WPqnHmS6DBsgCcZMBfRL0C97mc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/reviews/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reviews",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit the review",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjcyMDU0LCJpYXQiOjE3NTQyNzE3NTQsImp0aSI6IjNjMzMyOTVjZDRiMzQ0ZTdiY2JlNzkzNDRiZDE3ZjJmIiwidXNlcl9pZCI6Mn0.oUD24TRRqdDZMeDm3a7IeaKB6qnFWs-toYxFDGKCKUI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"rate\": 3,\n  \"description\": \"تم التعديل\",\n  \"receiver\": 1\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reviews/2/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reviews",
+						"2",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit review partialy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjcyMDU0LCJpYXQiOjE3NTQyNzE3NTQsImp0aSI6IjNjMzMyOTVjZDRiMzQ0ZTdiY2JlNzkzNDRiZDE3ZjJmIiwidXNlcl9pZCI6Mn0.oUD24TRRqdDZMeDm3a7IeaKB6qnFWs-toYxFDGKCKUI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"rate\": 1\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reviews/2/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reviews",
+						"2",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Review",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjcyMDU0LCJpYXQiOjE3NTQyNzE3NTQsImp0aSI6IjNjMzMyOTVjZDRiMzQ0ZTdiY2JlNzkzNDRiZDE3ZjJmIiwidXNlcl9pZCI6Mn0.oUD24TRRqdDZMeDm3a7IeaKB6qnFWs-toYxFDGKCKUI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"rate\": 1\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/reviews/2/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reviews",
+						"2",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all reviews that made by auth user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjcyMDU0LCJpYXQiOjE3NTQyNzE3NTQsImp0aSI6IjNjMzMyOTVjZDRiMzQ0ZTdiY2JlNzkzNDRiZDE3ZjJmIiwidXNlcl9pZCI6Mn0.oUD24TRRqdDZMeDm3a7IeaKB6qnFWs-toYxFDGKCKUI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/reviews/made-by-me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reviews",
+						"made-by-me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all reviews that made ON auth user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjcyMzYxLCJpYXQiOjE3NTQyNzIwNjEsImp0aSI6IjcxYTk0M2JlNmNiNDRlNzJiMTgxNTA3NDY4ODM1ZTg3IiwidXNlcl9pZCI6Mn0.M8KBRIbfiXqvrBm_IhS1jb25dGv3sOqv74gKQ5WXXNY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/reviews/received-by-me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reviews",
+						"received-by-me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all reviews that made ON specific user using user_ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0MjcyMzYxLCJpYXQiOjE3NTQyNzIwNjEsImp0aSI6IjcxYTk0M2JlNmNiNDRlNzJiMTgxNTA3NDY4ODM1ZTg3IiwidXNlcl9pZCI6Mn0.M8KBRIbfiXqvrBm_IhS1jb25dGv3sOqv74gKQ5WXXNY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/reviews/user/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"reviews",
+						"user",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create new service",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc0NDc3LCJpYXQiOjE3NTQyNzQxNzcsImp0aSI6IjI0YmM0YWMwZDMyZjQ4NDg5N2ZjNGFlYzA4NTVkOGUwIiwidXNlcl9pZCI6Mn0.8ylz0yEiNnHP0thcTpPdFE8Bp4vqpLzJ_Sw_fl7bnvc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"receiver\": 1,\n  \"amount\": 150.00\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/services/create/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update service",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc0NDc3LCJpYXQiOjE3NTQyNzQxNzcsImp0aSI6IjI0YmM0YWMwZDMyZjQ4NDg5N2ZjNGFlYzA4NTVkOGUwIiwidXNlcl9pZCI6Mn0.8ylz0yEiNnHP0thcTpPdFE8Bp4vqpLzJ_Sw_fl7bnvc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": 200.00\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/services/2/update/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"2",
+						"update",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get specific service",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc0NDc3LCJpYXQiOjE3NTQyNzQxNzcsImp0aSI6IjI0YmM0YWMwZDMyZjQ4NDg5N2ZjNGFlYzA4NTVkOGUwIiwidXNlcl9pZCI6Mn0.8ylz0yEiNnHP0thcTpPdFE8Bp4vqpLzJ_Sw_fl7bnvc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/1/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete specific service",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/3/delete/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"3",
+						"delete",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "accept service ( convert pending to be accepted)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc0NDc3LCJpYXQiOjE3NTQyNzQxNzcsImp0aSI6IjI0YmM0YWMwZDMyZjQ4NDg5N2ZjNGFlYzA4NTVkOGUwIiwidXNlcl9pZCI6Mn0.8ylz0yEiNnHP0thcTpPdFE8Bp4vqpLzJ_Sw_fl7bnvc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/2/accept/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"2",
+						"accept",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reject service (convert status to be rejected)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc0ODI3LCJpYXQiOjE3NTQyNzQ1MjcsImp0aSI6Ijg5MTZmYzc3MTc2MTRmYjg5NzM3NTQzOTBkYWM4NmE0IiwidXNlcl9pZCI6Mn0.bUcJsO8lUQmMortSEOD7DYsIvWkKkSMw_LdsX1SuJIE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/3/reject/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"3",
+						"reject",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all services sent by auth user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc0ODI3LCJpYXQiOjE3NTQyNzQ1MjcsImp0aSI6Ijg5MTZmYzc3MTc2MTRmYjg5NzM3NTQzOTBkYWM4NmE0IiwidXNlcl9pZCI6Mn0.bUcJsO8lUQmMortSEOD7DYsIvWkKkSMw_LdsX1SuJIE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/sent",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"sent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all services auth user Received",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc0ODI3LCJpYXQiOjE3NTQyNzQ1MjcsImp0aSI6Ijg5MTZmYzc3MTc2MTRmYjg5NzM3NTQzOTBkYWM4NmE0IiwidXNlcl9pZCI6Mn0.bUcJsO8lUQmMortSEOD7DYsIvWkKkSMw_LdsX1SuJIE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/received",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"received"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all services sent by specific user using User_ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc0ODI3LCJpYXQiOjE3NTQyNzQ1MjcsImp0aSI6Ijg5MTZmYzc3MTc2MTRmYjg5NzM3NTQzOTBkYWM4NmE0IiwidXNlcl9pZCI6Mn0.bUcJsO8lUQmMortSEOD7DYsIvWkKkSMw_LdsX1SuJIE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/user/2/sent",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"user",
+						"2",
+						"sent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all services received to specific user using user_ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc0ODI3LCJpYXQiOjE3NTQyNzQ1MjcsImp0aSI6Ijg5MTZmYzc3MTc2MTRmYjg5NzM3NTQzOTBkYWM4NmE0IiwidXNlcl9pZCI6Mn0.bUcJsO8lUQmMortSEOD7DYsIvWkKkSMw_LdsX1SuJIE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/user/2/received",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"user",
+						"2",
+						"received"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all pending services",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc1MTc5LCJpYXQiOjE3NTQyNzQ4NzksImp0aSI6IjM4OWU1OTZhMjM2NjQxMzc4ZjJlYWUzNWFjMGRmNjA5IiwidXNlcl9pZCI6Mn0.DdL2A39Z1pQnYJlpzwgcb-2FX6DFiHPZ7doAK2yppJY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/status/pending",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"status",
+						"pending"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all accepted services",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc1MTc5LCJpYXQiOjE3NTQyNzQ4NzksImp0aSI6IjM4OWU1OTZhMjM2NjQxMzc4ZjJlYWUzNWFjMGRmNjA5IiwidXNlcl9pZCI6Mn0.DdL2A39Z1pQnYJlpzwgcb-2FX6DFiHPZ7doAK2yppJY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/status/accepted",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"status",
+						"accepted"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all rejected services",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU0Mjc1MTc5LCJpYXQiOjE3NTQyNzQ4NzksImp0aSI6IjM4OWU1OTZhMjM2NjQxMzc4ZjJlYWUzNWFjMGRmNjA5IiwidXNlcl9pZCI6Mn0.DdL2A39Z1pQnYJlpzwgcb-2FX6DFiHPZ7doAK2yppJY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/services/status/rejected",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"services",
+						"status",
+						"rejected"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
