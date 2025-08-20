@@ -9,3 +9,4 @@ class ArticleAdmin(admin.ModelAdmin):
 
     # Show AI feedback directly in the article's detail view in the admin
     readonly_fields = ('ai_review_score', 'ai_review_summary', 'ai_review_concerns')
+

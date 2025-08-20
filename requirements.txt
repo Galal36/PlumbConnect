@@ -14,3 +14,4 @@ djangorestframework
 django-cors-headers
 channels
 channels-redis
+google-generativeai

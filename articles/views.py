@@ -34,21 +34,29 @@ class ArticleViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """
-        Automatically set the author and trigger the AI review.
+        Automatically set the author, set status to pending, and trigger the AI review.
         """
-        article = serializer.save(user=self.request.user)
-        
+        # Save article with pending status (not approved by default)
+        article = serializer.save(user=self.request.user, is_approved=False)
+
+        # Trigger AI review
         ai_feedback = review_article_with_ai(article.description)
         if ai_feedback:
             tech_score = ai_feedback.get('technical_score', 0)
             rel_score = ai_feedback.get('relevance_score', 0)
             article.ai_review_score = (tech_score + rel_score) / 2
-            article.ai_review_summary = ai_feedback.get('summary')
+            article.ai_review_summary = ai_feedback.get('summary', 'No summary available')
             concerns = {
                 "safety": ai_feedback.get('safety_concerns', []),
                 "inappropriate": ai_feedback.get('is_inappropriate', False)
             }
             article.ai_review_concerns = concerns
+            article.save()
+        else:
+            # If AI review fails, set default values
+            article.ai_review_score = 0.5
+            article.ai_review_summary = "AI review unavailable"
+            article.ai_review_concerns = {"safety": [], "inappropriate": False}
             article.save()
 
     @action(detail=True, methods=['patch'], permission_classes=[IsAdminUser])
