@@ -22,9 +22,14 @@ class ChatListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Chat.objects.filter(
-            models.Q(sender=user) | models.Q(receiver=user)
-        ).select_related('sender', 'receiver').prefetch_related('messages')
+        if user.role in ['admin', 'moderator']:
+            # Admins can see all chats
+            return Chat.objects.all().select_related('sender', 'receiver').prefetch_related('messages')
+        else:
+            # Regular users can only see their own chats
+            return Chat.objects.filter(
+                models.Q(sender=user) | models.Q(receiver=user)
+            ).select_related('sender', 'receiver').prefetch_related('messages')
 
     def create(self, request, *args, **kwargs):
         # Use ChatCreateSerializer for validation and creation
@@ -43,9 +48,14 @@ class ChatDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Chat.objects.filter(
-            models.Q(sender=user) | models.Q(receiver=user)
-        ).select_related('sender', 'receiver')
+        if user.role in ['admin', 'moderator']:
+            # Admins can see all chats
+            return Chat.objects.all().select_related('sender', 'receiver')
+        else:
+            # Regular users can only see their own chats
+            return Chat.objects.filter(
+                models.Q(sender=user) | models.Q(receiver=user)
+            ).select_related('sender', 'receiver')
 
     def perform_update(self, serializer):
         # السماح بتحديث is_archived فقط

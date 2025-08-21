@@ -75,6 +75,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             # Get token from query parameters
             query_string = self.scope.get('query_string', b'').decode()
+            print(f"WebSocket query string: {query_string}")
             query_params = dict(param.split('=') for param in query_string.split('&') if '=' in param)
             token = query_params.get('token')
 
@@ -82,14 +83,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 print("No token provided in WebSocket connection")
                 return None
 
+            print(f"WebSocket token received: {token[:50]}...")
+
             # Decode and validate the token
             try:
                 UntypedToken(token)
                 decoded_data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
                 user_id = decoded_data.get('user_id')
+                print(f"Decoded user_id: {user_id}")
 
                 if user_id:
                     user = User.objects.get(id=user_id)
+                    print(f"Authenticated user: {user.name} ({user.role})")
                     return user
 
             except (InvalidToken, TokenError, User.DoesNotExist) as e:
@@ -105,6 +110,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             chat = Chat.objects.get(id=self.chat_id)
             user = self.scope['user']
+            # Allow admins to access all chats
+            if user.role in ['admin', 'moderator']:
+                return True
+            # Allow chat participants to access their chats
             return user in [chat.sender, chat.receiver]
         except Chat.DoesNotExist:
             return False
@@ -116,7 +125,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             user = self.scope['user']
 
             # Verify user has access to this chat
-            if user not in [chat.sender, chat.receiver]:
+            if user.role not in ['admin', 'moderator'] and user not in [chat.sender, chat.receiver]:
                 return None
 
             message = Message.objects.create(

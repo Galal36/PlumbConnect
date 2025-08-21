@@ -22,6 +22,14 @@ class MessageListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
+
+        # Admins can see all messages
+        if user.role == 'admin':
+            return Message.objects.filter(
+                is_deleted=False
+            ).select_related('sender', 'chat')
+
+        # Regular users can only see messages from their chats
         return Message.objects.filter(
             models.Q(chat__sender=user) | models.Q(chat__receiver=user),
             is_deleted=False
@@ -44,6 +52,12 @@ class MessageDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
+
+        # Admins can see all messages
+        if user.role == 'admin':
+            return Message.objects.all().select_related('sender', 'chat')
+
+        # Regular users can only see messages from their chats
         return Message.objects.filter(
             models.Q(chat__sender=user) | models.Q(chat__receiver=user)
         ).select_related('sender', 'chat')
