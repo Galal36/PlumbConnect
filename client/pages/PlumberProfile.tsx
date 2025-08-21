@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/
 import { Clock, CheckCircle, XCircle, User, Phone, MapPin, Star, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import realApiService from "../services/realApi";
+import Navbar from "../components/Navbar";
 
 interface Article {
   id: string;
@@ -162,8 +163,10 @@ const PlumberProfile: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-900" dir="rtl">
+      <Navbar />
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">الملف الشخصي</h1>
@@ -383,6 +386,7 @@ const PlumberProfile: React.FC = () => {
             />
           </DialogContent>
         </Dialog>
+        </div>
       </div>
     </div>
   );

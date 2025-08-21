@@ -16,8 +16,8 @@ export default function ComplaintsList() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [isLoadingComplaints, setIsLoadingComplaints] = useState(true);
   const [filters, setFilters] = useState({
-    complaint_type: "",
-    status: "",
+    complaint_type: "all",
+    status: "all",
     search: "",
   });
 
@@ -30,11 +30,27 @@ export default function ComplaintsList() {
   const loadComplaints = async () => {
     try {
       setIsLoadingComplaints(true);
-      const data = await complaintsApiService.getComplaints(filters);
+
+      // Prepare filters for API call - exclude "all" values
+      const apiFilters: any = {};
+      if (filters.complaint_type && filters.complaint_type !== "all") {
+        apiFilters.complaint_type = filters.complaint_type;
+      }
+      if (filters.status && filters.status !== "all") {
+        apiFilters.status = filters.status;
+      }
+      if (filters.search) {
+        apiFilters.search = filters.search;
+      }
+
+      const data = await complaintsApiService.getComplaints(apiFilters);
+      // The API service now handles response format conversion
       setComplaints(data);
     } catch (error) {
       console.error("Failed to load complaints:", error);
       toast.error("فشل في تحميل الشكاوى");
+      // Ensure complaints is set to empty array on error
+      setComplaints([]);
     } finally {
       setIsLoadingComplaints(false);
     }
@@ -84,6 +100,8 @@ export default function ComplaintsList() {
           </p>
         </div>
 
+
+
         {/* Filters */}
         <Card className="premium-card-gradient mb-6">
           <CardHeader>
@@ -114,7 +132,7 @@ export default function ComplaintsList() {
                   <SelectValue placeholder="نوع الشكوى" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">جميع الأنواع</SelectItem>
+                  <SelectItem value="all">جميع الأنواع</SelectItem>
                   {COMPLAINT_TYPES.map((type) => (
                     <SelectItem key={type.value} value={type.value}>
                       {type.label}
@@ -132,7 +150,7 @@ export default function ComplaintsList() {
                   <SelectValue placeholder="حالة الشكوى" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">جميع الحالات</SelectItem>
+                  <SelectItem value="all">جميع الحالات</SelectItem>
                   {COMPLAINT_STATUS.map((status) => (
                     <SelectItem key={status.value} value={status.value}>
                       {status.label}

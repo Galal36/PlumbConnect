@@ -255,6 +255,13 @@ export default function Chat() {
   // Get the other participant in the chat
   const getOtherParticipant = (chat: ChatType | null) => {
     if (!user || !chat || !chat.sender || !chat.receiver) return null;
+
+    // For admins, show the first participant (sender) as the "other" participant
+    if (user.role === 'admin') {
+      return chat.sender;
+    }
+
+    // For regular users, show the actual other participant
     return chat.sender.id === user.id ? chat.receiver : chat.sender;
   };
 
@@ -275,6 +282,12 @@ export default function Chat() {
   };
 
   const isMessageFromCurrentUser = (message: Message) => {
+    // For admins viewing chats, never show messages as "from current user"
+    // This allows them to see the conversation flow properly
+    if (user?.role === 'admin') {
+      return false;
+    }
+
     return user && message.sender && message.sender.id === user.id;
   };
 
@@ -412,11 +425,17 @@ export default function Chat() {
                     </Avatar>
                     <div>
                       <h3 className="font-semibold text-white">
-                        {getOtherParticipant(currentChat)?.name}
+                        {user?.role === 'admin' && currentChat ?
+                          `${currentChat.sender.name} ↔ ${currentChat.receiver.name}` :
+                          getOtherParticipant(currentChat)?.name
+                        }
                       </h3>
                       <div className="flex items-center gap-2">
                         <p className="text-sm text-gray-300">
-                          {getOtherParticipant(currentChat)?.role === "plumber" ? "فني صحي" : "عميل"}
+                          {user?.role === 'admin' && currentChat ?
+                            `${currentChat.sender.role === "plumber" ? "فني صحي" : "عميل"} ↔ ${currentChat.receiver.role === "plumber" ? "فني صحي" : "عميل"}` :
+                            (getOtherParticipant(currentChat)?.role === "plumber" ? "فني صحي" : "عميل")
+                          }
                         </p>
                         {/* User Online Status */}
                         <div className="flex items-center gap-1">
@@ -429,8 +448,8 @@ export default function Chat() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {/* Request Service Button - Only show for plumbers */}
-                    {getOtherParticipant(currentChat)?.role === "plumber" && (
+                    {/* Request Service Button - Only show for plumbers and not for admins */}
+                    {user?.role !== 'admin' && getOtherParticipant(currentChat)?.role === "plumber" && (
                       <Button
                         variant="outline"
                         size="sm"
@@ -484,6 +503,13 @@ export default function Chat() {
                                       : "bg-gray-700 text-white"
                                   }`}
                                 >
+                                  {/* Show sender name for admins */}
+                                  {user?.role === 'admin' && msg.sender && (
+                                    <p className="text-xs font-semibold mb-1 text-gray-300">
+                                      {msg.sender.name} ({msg.sender.role === 'plumber' ? 'فني صحي' : 'عميل'})
+                                    </p>
+                                  )}
+
                                   {/* Display image if message type is image */}
                                   {msg.message_type === 'image' && msg.image && (
                                     <div className="mb-2">
@@ -522,8 +548,9 @@ export default function Chat() {
                 </ScrollArea>
               </div>
 
-              {/* Message Input */}
-              <div className="bg-gray-800 border-t border-gray-700 p-4">
+              {/* Message Input - Hidden for admins */}
+              {user?.role !== 'admin' && (
+                <div className="bg-gray-800 border-t border-gray-700 p-4">
                 {/* Image Preview */}
                 {imagePreview && (
                   <div className="mb-4 relative inline-block">
@@ -589,7 +616,8 @@ export default function Chat() {
                     )}
                   </Button>
                 </form>
-              </div>
+                </div>
+              )}
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">

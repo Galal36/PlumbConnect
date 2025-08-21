@@ -56,7 +56,7 @@ export default function Navbar() {
                   : "text-gray-300 hover:text-primary"
               }`}
             >
-              الفنيين الصحيين
+              الفنيين
             </Link>
             <Link
               to="/articles"
@@ -94,39 +94,47 @@ export default function Navbar() {
                   <Wrench className="h-4 w-4" />
                   الخدمات
                 </Link>
-                <Link
-                  to="/profile"
-                  className={`transition-colors ${
-                    isActiveLink("/profile")
-                      ? "text-primary font-semibold"
-                      : "text-gray-300 hover:text-primary"
-                  }`}
-                >
-                  الملف الشخصي
-                </Link>
-                <Link
-                  to="/complain"
-                  className={`transition-colors ${
-                    isActiveLink("/complain")
-                      ? "text-primary font-semibold"
-                      : "text-gray-300 hover:text-primary"
-                  }`}
-                >
-                  شكوى
-                </Link>
+                {/* Hide profile link - as requested */}
+                {/* Profile link is hidden for all users */}
 
-                {/* Admin complaints management */}
-                {user?.role === 'admin' && (
+                {/* Hide complaint link for admins */}
+                {user?.role !== 'admin' && (
                   <Link
-                    to="/complaints"
+                    to="/complain"
                     className={`transition-colors ${
-                      isActiveLink("/complaints")
+                      isActiveLink("/complain")
                         ? "text-primary font-semibold"
                         : "text-gray-300 hover:text-primary"
                     }`}
                   >
-                    إدارة الشكاوى
+                    شكوى
                   </Link>
+                )}
+
+                {/* Admin management links */}
+                {user?.role === 'admin' && (
+                  <>
+                    <Link
+                      to="/complaints"
+                      className={`transition-colors ${
+                        isActiveLink("/complaints")
+                          ? "text-primary font-semibold"
+                          : "text-gray-300 hover:text-primary"
+                      }`}
+                    >
+                      الشكاوى
+                    </Link>
+                    <Link
+                      to="/admin/users"
+                      className={`transition-colors ${
+                        isActiveLink("/admin/users")
+                          ? "text-primary font-semibold"
+                          : "text-gray-300 hover:text-primary"
+                      }`}
+                    >
+                      المستخدمين
+                    </Link>
+                  </>
                 )}
               </>
             )}
@@ -229,7 +237,7 @@ export default function Navbar() {
                     }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    الفنيين الصحيين
+                    الفنيين
                   </Link>
                   <Link
                     to="/articles"
@@ -270,42 +278,50 @@ export default function Navbar() {
                         <Wrench className="h-4 w-4" />
                         الخدمات
                       </Link>
-                      <Link
-                        to="/profile"
-                        className={`transition-colors p-2 rounded-md ${
-                          isActiveLink("/profile")
-                            ? "text-primary font-semibold bg-primary/10"
-                            : "text-gray-300 hover:text-primary hover:bg-gray-800"
-                        }`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        الملف الشخصي
-                      </Link>
-                      <Link
-                        to="/complain"
-                        className={`transition-colors p-2 rounded-md ${
-                          isActiveLink("/complain")
-                            ? "text-primary font-semibold bg-primary/10"
-                            : "text-gray-300 hover:text-primary hover:bg-gray-800"
-                        }`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        شكوى
-                      </Link>
+                      {/* Hide profile link - as requested */}
+                      {/* Profile link is hidden for all users */}
 
-                      {/* Admin complaints management in mobile */}
-                      {user?.role === 'admin' && (
+                      {/* Hide complaint link for admins */}
+                      {user?.role !== 'admin' && (
                         <Link
-                          to="/complaints"
+                          to="/complain"
                           className={`transition-colors p-2 rounded-md ${
-                            isActiveLink("/complaints")
+                            isActiveLink("/complain")
                               ? "text-primary font-semibold bg-primary/10"
                               : "text-gray-300 hover:text-primary hover:bg-gray-800"
                           }`}
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          إدارة الشكاوى
+                          شكوى
                         </Link>
+                      )}
+
+                      {/* Admin management links in mobile */}
+                      {user?.role === 'admin' && (
+                        <>
+                          <Link
+                            to="/complaints"
+                            className={`transition-colors p-2 rounded-md ${
+                              isActiveLink("/complaints")
+                                ? "text-primary font-semibold bg-primary/10"
+                                : "text-gray-300 hover:text-primary hover:bg-gray-800"
+                            }`}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                          >
+                            الشكاوى
+                          </Link>
+                          <Link
+                            to="/admin/users"
+                            className={`transition-colors p-2 rounded-md ${
+                              isActiveLink("/admin/users")
+                                ? "text-primary font-semibold bg-primary/10"
+                                : "text-gray-300 hover:text-primary hover:bg-gray-800"
+                            }`}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                          >
+                            المستخدمين
+                          </Link>
+                        </>
                       )}
 
                       {/* User information and links */}

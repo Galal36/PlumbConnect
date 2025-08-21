@@ -15,6 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import EditProfileForm from "@/components/EditProfileForm";
+import Navbar from "@/components/Navbar";
 
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { postsApiService } from "@/services/postsApi";
@@ -107,7 +108,9 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-900" dir="rtl">
+      <Navbar />
+      <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Profile Header */}
         <Card className="mb-8">
           <CardHeader>
@@ -264,5 +267,6 @@ export default function Profile() {
           )}
         </div>
       </div>
+    </div>
   );
 }

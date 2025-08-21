@@ -165,7 +165,7 @@ export default function Complain() {
                     </SelectTrigger>
                     <SelectContent>
                       {users.length === 0 ? (
-                        <SelectItem value="" disabled>
+                        <SelectItem value="no-users" disabled>
                           لا توجد مستخدمين متاحين
                         </SelectItem>
                       ) : (

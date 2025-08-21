@@ -1,3 +1,6 @@
+/* Import chatbot styles */
+@import './styles/chatbot.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

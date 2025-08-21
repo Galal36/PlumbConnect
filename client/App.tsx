@@ -11,6 +11,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import PrivateRoute from "./components/guards/PrivateRoute";
 import PublicRoute from "./components/guards/PublicRoute";
 import SEOChecker from "./components/SEOChecker";
+import ChatBot from "./components/ChatBot";
 import { ROUTES, USER_ROLES } from "./constants";
 
 // Lazy load components for better performance
@@ -35,6 +36,7 @@ const Articles = lazy(() => import("./pages/Articles"));
 const Services = lazy(() => import("./pages/Services"));
 const Complain = lazy(() => import("./pages/Complain"));
 const ComplaintsList = lazy(() => import("./pages/ComplaintsList"));
+const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const Notifications = lazy(() => import("./pages/Notifications"));
 const PlumberDashboard = lazy(() => import("./pages/PlumberDashboard"));
 const HowToChoose = lazy(() => import("./pages/HowToChoose"));
@@ -268,6 +270,14 @@ export default function App() {
                       }
                     />
                     <Route
+                      path="/admin/users"
+                      element={
+                        <PrivateRoute>
+                          <AdminUsers />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
                       path={ROUTES.NOTIFICATIONS}
                       element={
                         <PrivateRoute>
@@ -294,6 +304,7 @@ export default function App() {
                 </Suspense>
               </ErrorBoundary>
               <SEOChecker />
+              <ChatBot />
             </BrowserRouter>
           </TooltipProvider>
         </NotificationProvider>

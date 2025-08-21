@@ -109,7 +109,21 @@ class ComplaintsApiService {
       headers: getAuthHeaders(),
     });
 
-    return handleResponse(response);
+    const data = await handleResponse(response);
+
+    // Handle paginated response - extract results array
+    if (data && typeof data === 'object' && 'results' in data) {
+      return data.results || [];
+    }
+
+    // Handle direct array response
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    // Fallback to empty array
+    console.warn('Unexpected complaints API response format:', data);
+    return [];
   }
 
   async getComplaint(id: number): Promise<Complaint> {
