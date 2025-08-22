@@ -6,6 +6,7 @@ from django.db import models
 from .models import Message
 from .serializers import MessageSerializer, MessageCreateSerializer
 from .permissions import IsAdminOrChatParticipant
+from notifications.utils import NotificationService
 
 
 class MessageListCreateView(generics.ListCreateAPIView):
@@ -40,6 +41,18 @@ class MessageListCreateView(generics.ListCreateAPIView):
         create_serializer = MessageCreateSerializer(data=request.data, context={'request': request})
         create_serializer.is_valid(raise_exception=True)
         message = create_serializer.save()
+
+        # Send notifications for new message
+        try:
+            chat = message.chat
+            sender = message.sender
+            receiver = chat.receiver if chat.sender == sender else chat.sender
+
+            # Create notifications
+            NotificationService.notify_new_message(sender, receiver, chat.id)
+        except Exception as e:
+            # Log error but don't fail the message creation
+            print(f"Failed to send message notification: {e}")
 
         # Return the full message data using MessageSerializer
         response_serializer = MessageSerializer(message, context={'request': request})

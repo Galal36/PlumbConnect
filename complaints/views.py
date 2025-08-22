@@ -6,6 +6,7 @@ from django.db import models
 from .models import Complaint
 from .serializers import ComplaintSerializer, ComplaintCreateSerializer, ComplaintUpdateSerializer
 from .permissions import IsAdminOrComplaintParticipant
+from notifications.utils import NotificationService
 
 
 class ComplaintListCreateView(generics.ListCreateAPIView):
@@ -29,6 +30,17 @@ class ComplaintListCreateView(generics.ListCreateAPIView):
                 models.Q(from_user=user) | models.Q(to_user=user)
             ).select_related('from_user', 'to_user', 'resolved_by')
 
+    def perform_create(self, serializer):
+        complaint = serializer.save()
+
+        # Send notifications for new complaint
+        try:
+            # Create notifications for admins
+            NotificationService.notify_new_complaint(complaint)
+        except Exception as e:
+            # Log error but don't fail the complaint creation
+            print(f"Failed to send complaint notification: {e}")
+
 
 class ComplaintDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, IsAdminOrComplaintParticipant]
@@ -48,11 +60,25 @@ class ComplaintDetailView(generics.RetrieveUpdateDestroyAPIView):
             ).select_related('from_user', 'to_user', 'resolved_by')
 
     def perform_update(self, serializer):
+        # Get the old status before updating
+        complaint = self.get_object()
+        old_status = complaint.status
+
         # تسجيل من قام بحل الشكوى
         if 'status' in serializer.validated_data and serializer.validated_data['status'] == 'resolved':
-            serializer.save(resolved_by=self.request.user)
+            updated_complaint = serializer.save(resolved_by=self.request.user)
         else:
-            serializer.save()
+            updated_complaint = serializer.save()
+
+        # Send notifications for status change
+        try:
+            new_status = updated_complaint.status
+            if old_status != new_status:
+                # Create notifications for status change
+                NotificationService.notify_complaint_status_change(updated_complaint, old_status, new_status)
+        except Exception as e:
+            # Log error but don't fail the update
+            print(f"Failed to send complaint status change notification: {e}")
 
 
 class ComplaintStatsView(generics.RetrieveAPIView):

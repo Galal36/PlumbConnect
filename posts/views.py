@@ -5,6 +5,7 @@ from .models import Post, Comment, Comment_Reply, Like
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import PostSerializer, CommentSerializer, CommentReplySerializer
 from .permissions import IsOwnerOrReadOnly
+from notifications.utils import NotificationService
 
 class PostViewSet(viewsets.ModelViewSet):
     """API endpoint for posts."""
@@ -43,7 +44,19 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         # The post_id will be passed in the request data
-        serializer.save(user=self.request.user)
+        comment = serializer.save(user=self.request.user)
+
+        # Send notifications for new comment
+        try:
+            commenter = self.request.user
+            post_author = comment.post.user
+            comment_content = comment.comment  # The field is called 'comment', not 'content'
+
+            # Create notifications
+            NotificationService.notify_post_comment(commenter, post_author, comment.post.id, comment_content)
+        except Exception as e:
+            # Log error but don't fail the comment creation
+            print(f"Failed to send comment notification: {e}")
 
 class CommentReplyViewSet(viewsets.ModelViewSet):
     """API endpoint for comment replies."""

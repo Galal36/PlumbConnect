@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Avg
 from services.models import Service, ServiceReview
 from .serializers import ServiceSerializer, ServiceReviewSerializer
+from notifications.utils import NotificationService
 
 User = get_user_model()
 
@@ -15,7 +16,18 @@ class ServiceCreateView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user, status='pending')
+        service = serializer.save(sender=self.request.user, status='pending')
+
+        # Send notifications for new service request
+        try:
+            client = service.sender
+            plumber = service.receiver  # The field is called 'receiver', not 'plumber'
+
+            # Create notifications
+            NotificationService.notify_service_request(client, plumber, service.id)
+        except Exception as e:
+            # Log error but don't fail the service creation
+            print(f"Failed to send service request notification: {e}")
 
 
 class ServiceListView(generics.ListAPIView):
@@ -161,7 +173,19 @@ class CreateServiceReviewView(generics.CreateAPIView):
             from rest_framework.exceptions import ValidationError
             raise ValidationError('تم تقييم هذه الخدمة مسبقاً')
 
-        serializer.save()
+        review = serializer.save()
+
+        # Send notifications for new review
+        try:
+            reviewer = self.request.user
+            plumber = service_request.receiver  # The field is called 'receiver', not 'plumber'
+            rating = review.rating
+
+            # Create notifications
+            NotificationService.notify_service_review(reviewer, plumber, rating, service_request.id)
+        except Exception as e:
+            # Log error but don't fail the review creation
+            print(f"Failed to send service review notification: {e}")
 
 
 class PlumberReviewsView(generics.ListAPIView):
