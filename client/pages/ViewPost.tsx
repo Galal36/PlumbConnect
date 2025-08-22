@@ -173,11 +173,12 @@ function CommentComponent({ comment }: CommentComponentProps) {
                       <p className="text-gray-300 text-sm">{reply.reply}</p>
                     </div>
                     <div className="flex items-center gap-1 mt-2">
-                      <ReportForm
+                      {/* Report flag hidden as requested */}
+                      {/* <ReportForm
                         type="reply-comment"
                         targetId={reply.id}
                         targetAuthor={reply.user.name}
-                      />
+                      /> */}
                     </div>
                   </div>
                 </div>
@@ -317,11 +318,12 @@ export default function ViewPost() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <ReportForm
+                {/* Report flag hidden as requested */}
+                {/* <ReportForm
                   type="post"
                   targetId={post.id}
                   targetAuthor={post.user.name}
-                />
+                /> */}
                 <Button variant="ghost" size="sm">
                   <MoreVertical className="h-4 w-4" />
                 </Button>

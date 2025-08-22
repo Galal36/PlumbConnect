@@ -1,10 +1,7 @@
 import { memo } from "react";
-import { Link } from "react-router-dom";
 import { MessageCircle, MessageSquare, Reply, X } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { formatTimeAgo, getAvatarInitials } from "@/utils";
-import { ROUTES } from "@/constants";
+import { formatTimeAgo } from "@/utils";
 import { useNotificationContext } from "@/contexts/NotificationContext";
 import { cn } from "@/lib/utils";
 import type { Notification } from "@/types/notifications";
@@ -38,20 +35,11 @@ const NotificationItem = memo(function NotificationItem({
     }
   };
 
-  // Get notification link
-  const getNotificationLink = (): string => {
-    if (notification.action_url) {
-      return notification.action_url;
-    }
-
-    switch (notification.notification_type) {
-      case "new_message":
-      case "new_chat":
-        return ROUTES.CHAT;
-      case "complaint_status":
-        return "/complaints";
-      default:
-        return ROUTES.HOME;
+  // Handle mark as read
+  const handleMarkAsRead = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!notification.is_read) {
+      markAsRead(notification.id);
     }
   };
 
@@ -73,16 +61,6 @@ const NotificationItem = memo(function NotificationItem({
     }
   };
 
-  // Handle notification click
-  const handleClick = () => {
-    if (!notification.is_read) {
-      markAsRead(notification.id);
-    }
-    if (onClose) {
-      onClose();
-    }
-  };
-
   // Handle remove notification
   const handleRemove = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -91,11 +69,9 @@ const NotificationItem = memo(function NotificationItem({
   };
 
   return (
-    <Link
-      to={getNotificationLink()}
-      onClick={handleClick}
+    <div
       className={cn(
-        "block p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors",
+        "block p-4 border-b border-gray-200 transition-colors",
         !notification.is_read && "bg-blue-50/50",
       )}
     >
@@ -124,16 +100,7 @@ const NotificationItem = memo(function NotificationItem({
               )}
             </div>
 
-            {/* Remove button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleRemove}
-              className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 hover:bg-gray-200 flex-shrink-0"
-              aria-label="حذف الإشعار"
-            >
-              <X className="h-3 w-3" />
-            </Button>
+
           </div>
 
           {/* Message */}
@@ -141,24 +108,49 @@ const NotificationItem = memo(function NotificationItem({
             {notification.content}
           </p>
 
-          {/* Notification type */}
+          {/* Bottom section with type, timestamp, and actions */}
           <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">
-              {notification.notification_type === 'new_message' && 'رسالة جديدة'}
-              {notification.notification_type === 'new_chat' && 'محادثة جديدة'}
-              {notification.notification_type === 'complaint_status' && 'تحديث الشكوى'}
-              {notification.notification_type === 'system' && 'إشعار النظام'}
-              {notification.notification_type === 'reminder' && 'تذكير'}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500">
+                {notification.notification_type === 'new_message' && 'رسالة جديدة'}
+                {notification.notification_type === 'new_chat' && 'محادثة جديدة'}
+                {notification.notification_type === 'complaint_status' && 'تحديث الشكوى'}
+                {notification.notification_type === 'system' && 'إشعار النظام'}
+                {notification.notification_type === 'reminder' && 'تذكير'}
+              </span>
 
-            {/* Timestamp */}
-            <p className="text-xs text-gray-400">
-              {formatTimeAgo(notification.created_at)}
-            </p>
+              {/* Timestamp */}
+              <span className="text-xs text-gray-400">
+                {formatTimeAgo(notification.created_at)}
+              </span>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex items-center gap-1">
+              {!notification.is_read && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleMarkAsRead}
+                  className="h-6 px-2 text-xs text-blue-600 hover:bg-blue-50"
+                >
+                  تم القراءة
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRemove}
+                className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50"
+                aria-label="حذف الإشعار"
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 });
 

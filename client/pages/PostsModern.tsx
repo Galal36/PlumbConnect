@@ -181,7 +181,8 @@ export default function PostsModern() {
                         <MessageCircle className="h-5 w-5" />
                         <span className="text-sm">تفاصيل العمل</span>
                       </div>
-                      <ReportForm
+                      {/* Report flag hidden as requested */}
+                      {/* <ReportForm
                         type="post"
                         targetId={post.id}
                         targetAuthor={post.userName}
@@ -190,7 +191,7 @@ export default function PostsModern() {
                           <Flag className="h-5 w-5" />
                           <span className="text-sm">بلاغ</span>
                         </button>
-                      </ReportForm>
+                      </ReportForm> */}
                     </div>
                     <Button variant="ghost" size="sm" asChild>
                       <Link to={`/experience/${post.id}`}>عرض التفاصيل</Link>

@@ -184,13 +184,14 @@ export const PostCard = memo(function PostCard({
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <ReportForm
+            {/* Report flag hidden as requested */}
+            {/* <ReportForm
               type="post"
               targetId={post.id}
               targetAuthor={post.user.name}
               existingReport={myPostReport || undefined}
               onReportChange={refetchPostReports}
-            />
+            /> */}
             {isPostOwner && (
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="text-xs px-2 py-1 bg-blue-50 text-blue-700 border-blue-200">
@@ -489,13 +490,14 @@ function CommentComponent({ comment, onCommentUpdate, onCommentDelete }: Comment
             </Button>
           </div>
           <div className="flex items-center gap-1">
-            <ReportForm
+            {/* Report flag hidden as requested */}
+            {/* <ReportForm
               type="comment"
               targetId={comment.id}
               targetAuthor={comment.user.name}
               existingReport={myCommentReport || undefined}
               onReportChange={refetchCommentReports}
-            />
+            /> */}
             {isCommentOwner && (
               <div className="flex items-center gap-1">
                 <Badge variant="outline" className="text-xs px-1 py-0.5 bg-green-50 text-green-700 border-green-200">
@@ -670,13 +672,14 @@ function ReplyComponent({ reply, onReplyUpdate, onReplyDelete }: ReplyComponentP
               </span>
             </div>
             <div className="flex items-center gap-1">
-              <ReportForm
+              {/* Report flag hidden as requested */}
+              {/* <ReportForm
                 type="reply-comment"
                 targetId={reply.id}
                 targetAuthor={reply.user.name}
                 existingReport={myReplyReport || undefined}
                 onReportChange={refetchReplyReports}
-              />
+              /> */}
               {isReplyOwner && (
                 <div className="flex items-center gap-1">
                   <Badge variant="outline" className="text-xs px-1 py-0.5 bg-purple-50 text-purple-700 border-purple-200">

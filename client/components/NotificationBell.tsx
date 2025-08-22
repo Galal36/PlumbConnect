@@ -250,8 +250,8 @@ const NotificationBell: React.FC = () => {
             )}
           </div>
 
-          {/* Footer */}
-          {notifications.length > 0 && (
+          {/* Footer - Hidden as requested */}
+          {/* {notifications.length > 0 && (
             <div className="p-3 border-t border-gray-700 text-center">
               <button
                 onClick={() => {
@@ -264,7 +264,7 @@ const NotificationBell: React.FC = () => {
                 عرض جميع الإشعارات
               </button>
             </div>
-          )}
+          )} */}
         </div>
       )}
     </div>

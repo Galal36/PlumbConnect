@@ -136,8 +136,8 @@ const NotificationDropdown = memo(function NotificationDropdown() {
           )}
         </div>
 
-        {/* Footer */}
-        {notifications.length > 0 && (
+        {/* Footer - Hidden as requested */}
+        {/* {notifications.length > 0 && (
           <div className="p-3 border-t border-gray-200 bg-gray-50">
             <Button
               variant="ghost"
@@ -148,7 +148,7 @@ const NotificationDropdown = memo(function NotificationDropdown() {
               عرض جميع الإشعارات
             </Button>
           </div>
-        )}
+        )} */}
       </PopoverContent>
     </Popover>
   );
