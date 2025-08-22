@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { AlertTriangle, Search, Users, Trash2, Phone, Mail } from "lucide-react";
+import { AlertTriangle, Users, Trash2, Phone, Mail } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -36,8 +36,7 @@ export default function AdminUsers() {
   const { isAuthenticated, isLoading, user } = useAuthContext();
   const [users, setUsers] = useState<User[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+
 
   // Redirect if not admin
   if (!isLoading && (!isAuthenticated || user?.role !== 'admin')) {
@@ -105,20 +104,7 @@ export default function AdminUsers() {
     }
   }, [isAuthenticated, user]);
 
-  // Filter users based on search term
-  useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredUsers(users);
-    } else {
-      const filtered = users.filter(u => 
-        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.phone.includes(searchTerm) ||
-        u.role.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredUsers(filtered);
-    }
-  }, [users, searchTerm]);
+
 
   const getRoleColor = (role: string) => {
     switch (role) {
@@ -165,26 +151,7 @@ export default function AdminUsers() {
           </p>
         </div>
 
-        {/* Search */}
-        <Card className="premium-card-gradient mb-6">
-          <CardHeader>
-            <CardTitle className="text-end flex items-center gap-2">
-              <Search className="h-5 w-5" />
-              البحث في المستخدمين
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="relative">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="البحث بالاسم، البريد الإلكتروني، الهاتف، أو الدور..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pr-10"
-              />
-            </div>
-          </CardContent>
-        </Card>
+
 
         {/* Users Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -219,18 +186,18 @@ export default function AdminUsers() {
           <div className="text-center py-12">
             <div className="text-white">جاري تحميل المستخدمين...</div>
           </div>
-        ) : filteredUsers.length === 0 ? (
+        ) : users.length === 0 ? (
           <Card className="premium-card-gradient">
             <CardContent className="text-center py-12">
               <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-400">
-                {searchTerm ? "لا توجد نتائج للبحث" : "لا توجد مستخدمين"}
+                لا توجد مستخدمين
               </p>
             </CardContent>
           </Card>
         ) : (
           <div className="space-y-4">
-            {filteredUsers.map((listUser) => (
+            {users.map((listUser) => (
               <Card key={listUser.id} className="premium-card-gradient">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
