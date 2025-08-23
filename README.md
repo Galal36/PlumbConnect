@@ -1,7 +1,10 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mshuber1981/github-readme-development/main/png/logo-react.png" alt="React Logo" width="80"/>
-  <img src="https://raw.githubusercontent.com/mshuber1981/github-readme-development/main/png/logo-django.png" alt="Django Logo" width="80"/>
-  ERD.png
+  <a href="https://react.dev" target="_blank" rel="noreferrer">
+    <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
+  </a>
+  <a href="https://www.djangoproject.com/" target="_blank" rel="noreferrer">
+    <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=44B78B" alt="Django"/>
+  </a>
 </p>
 
 <h1 align="center">PlumbConnect: Full-Stack Service & Community Platform</h1>
