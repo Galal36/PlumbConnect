@@ -1,7 +1,6 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/mshuber1981/github-readme-development/main/png/logo-react.png" alt="React Logo" width="80"/>
   <img src="https://raw.githubusercontent.com/mshuber1981/github-readme-development/main/png/logo-django.png" alt="Django Logo" width="80"/>
-   <img src="ERD.png" alt="Django Logo" width="80"/>
   ERD.png
 </p>
 
@@ -10,6 +9,8 @@
 <p align="center">
   A robust, full-stack application connecting clients with professional plumbers in Kuwait, featuring real-time chat, a community forum, an AI-powered content moderation system, and integrated payments with Stripe.
 </p>
+<h4>First Check the ERD</h4>
+   <img src="ERD.png" alt="Django Logo" width="1200"/>
 
 <p align="center">
   <a href="#-key-features"><strong>Key Features</strong></a> ·
