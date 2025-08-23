@@ -234,5 +234,61 @@ Handles payment processing and webhooks.
 ---
 
 ### `chats` & `chat_messages` Apps
-*(No changes in this section. Chat functionality remains the same.)*
+Handles real-time chat functionality via WebSockets and a REST API for history.
+
+#### WebSocket Endpoint
+
+-   **URL**: `ws://localhost:8001/ws/chat/{chat_id}/`
+-   **Description**: Establishes a persistent WebSocket connection for real-time, bidirectional messaging within a specific chat room. Messages are sent and received as JSON objects.
+
+#### REST API Endpoints
+
+##### `POST` Requests
+-   **Endpoint**: `/chats/`
+    -   **Description**: Create a new chat with a user or retrieve an existing one.
+    -   **Permissions**: Authenticated.
+    -   **Request Body**:
+        ```json
+        {
+          "receiver_id": 2
+        }
+        ```
+
+-   **Endpoint**: `/chat-messages/`
+    -   **Description**: Send a message to a chat. Can be used as a fallback if WebSocket is unavailable.
+    -   **Permissions**: Participant.
+    -   **Request Body** (`multipart/form-data` if image/file):
+        -   `chat`: 1
+        -   `content`: "Here is the photo of the issue."
+        -   `message_type`: "image"
+        -   `image`: (File upload)
+
+##### `GET` Requests
+-   **Endpoint**: `/chats/`
+    -   **Description**: List all chats for the authenticated user.
+    -   **Permissions**: Authenticated.
+
+-   **Endpoint**: `/chat-messages/?chat={chat_id}`
+    -   **Description**: Retrieve the message history for a specific chat.
+    -   **Permissions**: Participant.
+
+##### `PATCH` / `PUT` Requests
+-   **Endpoint**: `/chats/{id}/archive/`
+    -   **Description**: Toggles the `is_archived` status of a chat.
+    -   **Permissions**: Participant.
+
+-   **Endpoint**: `/chat-messages/mark_read/`
+    -   **Description**: Mark all messages in a chat as read.
+    -   **Permissions**: Participant.
+    -   **Request Body**:
+        ```json
+        {
+          "chat_id": 1
+        }
+        ```
+
+##### `DELETE` Requests
+-   **Endpoint**: `/chat-messages/{id}/`
+    -   **Description**: Soft-deletes a message (marks `is_deleted=true`).
+    -   **Permissions**: Sender Only.
 
