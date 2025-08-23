@@ -142,83 +142,366 @@ The frontend is a modern single-page application (SPA) built with React and Type
 
 ## 🔧 API Documentation
 
-The PlumbConnect API is built with Django REST Framework and provides a comprehensive set of endpoints for managing users, services, posts, and more.
+The PlumbConnect API is built with Django REST Framework. This guide details the available endpoints, organized by application and HTTP method.
 
 **Base URL**: `/api/`
 
-### Authentication Endpoints
+---
 
-| Method | Endpoint                  | Description                                                               |
-| :----- | :------------------------ | :------------------------------------------------------------------------ |
-| `POST` | `/token/`                 | Login and obtain access/refresh tokens.                                   |
-| `POST` | `/token/refresh/`         | Refresh an expired access token.                                          |
-| `POST` | `/users/`                 | Register a new user (Client or Plumber ).                                  |
-| `GET`  | `/activate/{uid}/{token}/` | Activate a user account via the link sent to their email.                 |
-| `POST` | `/password-reset/`        | Request a password reset link to be sent via email.                       |
-| `POST` | `/password-reset/confirm/`| Confirm the password reset using the UID and token from the email link.     |
+### 👤 `users` App: Authentication & User Management
 
-### User & Profile Endpoints
+Handles user registration, login, profiles, and locations.
 
-| Method      | Endpoint           | Description                                                              |
-| :---------- | :----------------- | :----------------------------------------------------------------------- |
-| `GET`       | `/users/`          | **[Admin]** List all users.                                              |
-| `GET`       | `/users/{id}/`     | Get public profile information for a specific user.                      |
-| `GET`       | `/users/me/`       | Get the complete profile of the currently authenticated user.            |
-| `PATCH`     | `/users/me/`       | Update the profile of the currently authenticated user (including password). |
-| `GET`       | `/users/plumbers/` | Get a public list of all active plumbers.                                |
-| `GET`       | `/locations/`      | Get a list of available cities/locations.                                |
+#### `POST` Requests
 
-### Articles & Community Endpoints
+-   **Endpoint**: `/token/`
+    -   **Description**: Login a user to obtain JWT tokens.
+    -   **Permissions**: Public.
+    -   **Request Body**:
+        ```json
+        {
+          "email": "client@example.com",
+          "password": "clientpass123"
+        }
+        ```
 
-| Method      | Endpoint                    | Description                                                                 |
-| :---------- | :-------------------------- | :-------------------------------------------------------------------------- |
-| `POST`      | `/articles/`                | **[Plumber]** Create a new article. Triggers AI review.                     |
-| `GET`       | `/articles/`                | List all approved articles. Admins see all articles.                        |
-| `GET`       | `/articles/{id}/`           | Retrieve a single article.                                                  |
-| `PATCH`     | `/articles/{id}/`           | **[Owner/Admin]** Update an article's content.                              |
-| `DELETE`    | `/articles/{id}/`           | **[Owner/Admin]** Delete an article.                                        |
-| `PATCH`     | `/articles/{id}/approve/`   | **[Admin]** Approve or reject an article for publication.                   |
-| `POST`      | `/posts/`                   | Create a new community post.                                                |
-| `GET`       | `/posts/`                   | List all community posts.                                                   |
-| `POST`      | `/posts/{id}/like/`         | Like or unlike a post.                                                      |
-| `POST`      | `/comments/`                | Create a comment on a post. Requires `post` ID in the body.                 |
-| `POST`      | `/replies/`                 | Create a reply to a comment. Requires `comment` ID in the body.             |
+-   **Endpoint**: `/token/refresh/`
+    -   **Description**: Obtain a new access token using a refresh token.
+    -   **Permissions**: Public.
+    -   **Request Body**:
+        ```json
+        {
+          "refresh": "your_refresh_token_here"
+        }
+        ```
 
-### Services & Reviews Endpoints
+-   **Endpoint**: `/users/`
+    -   **Description**: Register a new user account.
+    -   **Permissions**: Public.
+    -   **Request Body**:
+        ```json
+        {
+          "name": "New Client",
+          "email": "newclient@example.com",
+          "phone": "98765432",
+          "password": "securepassword123",
+          "location_id": 1,
+          "role": "client" // or "plumber"
+        }
+        ```
 
-| Method      | Endpoint                        | Description                                                                 |
-| :---------- | :------------------------------ | :-------------------------------------------------------------------------- |
-| `POST`      | `/services/create/`             | **[Client]** Create a new service request for a plumber.                    |
-| `GET`       | `/services/list/`               | List all services associated with the current user (sent or received).      |
-| `PATCH`     | `/services/{id}/update/`        | **[Plumber]** Update service status (e.g., to 'completed').                 |
-| `POST`      | `/services/{id}/accept/`        | **[Plumber]** Accept a service request and set the price.                   |
-| `POST`      | `/services/{id}/reject/`        | **[Plumber]** Reject a service request.                                     |
-| `POST`      | `/services/reviews/create/`     | **[Client]** Create a review for a completed service.                       |
-| `GET`       | `/services/plumber/{id}/reviews/`| Get all reviews for a specific plumber.                                     |
-| `GET`       | `/services/plumber/{id}/rating/`| Get the average rating and total review count for a plumber.                |
+-   **Endpoint**: `/password-reset/`
+    -   **Description**: Request a password reset link.
+    -   **Permissions**: Public.
+    -   **Request Body**:
+        ```json
+        {
+          "email": "user-who-forgot-password@example.com"
+        }
+        ```
 
-### Real-Time Chat Endpoints (WebSocket)
+-   **Endpoint**: `/password-reset/confirm/`
+    -   **Description**: Confirm and set a new password using the token from the email.
+    -   **Permissions**: Public.
+    -   **Request Body**:
+        ```json
+        {
+          "uidb64": "OA",
+          "token": "ctz-abc123...",
+          "new_password": "my-new-secure-password"
+        }
+        ```
 
--   **Connection URL**: `ws://localhost:8001/ws/chat/{chat_id}/`
--   **Functionality**: Establishes a persistent WebSocket connection for real-time, bidirectional messaging within a specific chat room.
+#### `GET` Requests
 
-## Frontend Overview
+-   **Endpoint**: `/users/`
+    -   **Description**: List all users in the system.
+    -   **Permissions**: Admin Only.
 
-The frontend is architected for scalability and maintainability, with a clear separation of concerns.
+-   **Endpoint**: `/users/{id}/`
+    -   **Description**: Retrieve the profile of a specific user by their ID.
+    -   **Permissions**: Authenticated.
 
--   **`components/`**: Contains reusable UI components (`Button`, `Card`, `Dialog`, etc.), many of which are built upon `shadcn/ui`.
--   **`contexts/`**: Holds React Context providers for managing global state:
-    -   `AuthContext.tsx`: Manages user authentication state, user data, and roles.
-    -   `NotificationContext.tsx`: Handles a mock real-time notification system.
-    -   `ApiContext.tsx`: A foundational context for managing API state (can be expanded).
--   **`hooks/`**: Custom hooks for abstracting complex logic:
-    -   `useAuth.ts`: Core logic for authentication state.
-    -   `useApi.ts`: Generic hooks for fetching data from the API (`useApiCall`, `usePost`, etc.).
-    -   `useWebSocket.ts`: Manages the WebSocket connection for the chat.
--   **`services/`**: Contains API service classes that abstract `fetch` calls to the backend. This is where all direct communication with the Django API is defined.
-    -   `realApi.ts`: Handles core API requests, including authentication and token refresh logic.
-    -   `postsApi.ts`, `servicesApi.ts`, etc.: Modular services for different parts of the application.
--   **`pages/` (`pa/`)**: Top-level components that correspond to different routes in the application (e.g., `Home`, `Login`, `Profile`).
--   **`utils/`**: Utility functions for formatting, validation, and other common tasks.
+-   **Endpoint**: `/users/me/`
+    -   **Description**: Retrieve the profile of the currently logged-in user.
+    -   **Permissions**: Authenticated.
+
+-   **Endpoint**: `/users/plumbers/`
+    -   **Description**: Get a public list of all active plumbers.
+    -   **Permissions**: Public.
+
+-   **Endpoint**: `/locations/`
+    -   **Description**: Get a list of all available cities/locations.
+    -   **Permissions**: Public.
+
+-   **Endpoint**: `/activate/{uidb64}/{token}/`
+    -   **Description**: Activates a user account via the link sent to their email. This is accessed by the user clicking the link, not typically a manual API call.
+    -   **Permissions**: Public.
+
+#### `PATCH` / `PUT` Requests
+
+-   **Endpoint**: `/users/{id}/`
+    -   **Description**: Update a user's profile. An admin can update any user; a regular user can only update their own.
+    -   **Permissions**: Owner or Admin.
+    -   **Request Body**:
+        ```json
+        {
+          "name": "Updated Name",
+          "location_id": 2
+        }
+        ```
+
+#### `DELETE` Requests
+
+-   **Endpoint**: `/users/{id}/`
+    -   **Description**: Delete a user account.
+    -   **Permissions**: Owner or Admin.
 
 ---
+
+### ✍️ `articles` App: AI-Reviewed Knowledge Base
+
+Manages articles written by plumbers, including an AI-powered review and admin approval workflow.
+
+#### `POST` Requests
+
+-   **Endpoint**: `/articles/`
+    -   **Description**: Create a new article. This automatically triggers a review by the Gemini AI.
+    -   **Permissions**: Plumber Only.
+    -   **Request Body** (`multipart/form-data` ):
+        -   `title`: "How to Fix a Dripping Faucet"
+        -   `description`: "A detailed guide on fixing common faucet drips..."
+        -   `image`: (Optional file upload)
+
+#### `GET` Requests
+
+-   **Endpoint**: `/articles/`
+    -   **Description**: Lists all approved articles. Admins will see all articles, including pending and rejected ones.
+    -   **Permissions**: Public.
+
+-   **Endpoint**: `/articles/{id}/`
+    -   **Description**: Retrieve a single article, including AI review data if the requester is an admin.
+    -   **Permissions**: Public.
+
+#### `PATCH` / `PUT` Requests
+
+-   **Endpoint**: `/articles/{id}/`
+    -   **Description**: Update the title or description of an article.
+    -   **Permissions**: Owner or Admin.
+
+-   **Endpoint**: `/articles/{id}/approve/`
+    -   **Description**: Approve or reject an article for publication.
+    -   **Permissions**: Admin Only.
+    -   **Request Body**:
+        ```json
+        {
+          "is_approved": true
+        }
+        ```
+
+#### `DELETE` Requests
+
+-   **Endpoint**: `/articles/{id}/`
+    -   **Description**: Delete an article.
+    -   **Permissions**: Owner or Admin.
+
+---
+
+### 💬 `posts` App: Community Forum
+
+Handles community posts, comments, replies, and likes.
+
+#### `POST` Requests
+
+-   **Endpoint**: `/posts/`
+    -   **Description**: Create a new community post.
+    -   **Permissions**: Authenticated.
+    -   **Request Body** (`multipart/form-data`):
+        -   `statement`: "What is the best way to fix a running toilet?"
+        -   `image`: (Optional file upload)
+
+-   **Endpoint**: `/posts/{id}/like/`
+    -   **Description**: Toggles a like on a post. If liked, it becomes unliked, and vice-versa.
+    -   **Permissions**: Authenticated.
+    -   **Request Body**: None.
+
+-   **Endpoint**: `/comments/`
+    -   **Description**: Add a comment to a post.
+    -   **Permissions**: Authenticated.
+    -   **Request Body**:
+        ```json
+        {
+          "comment": "I think you need to check the flapper valve.",
+          "post": 1
+        }
+        ```
+
+-   **Endpoint**: `/replies/`
+    -   **Description**: Add a reply to a comment.
+    -   **Permissions**: Authenticated.
+    -   **Request Body**:
+        ```json
+        {
+          "reply": "Good point! That's usually the problem.",
+          "comment": 1
+        }
+        ```
+
+#### `GET` Requests
+
+-   **Endpoint**: `/posts/`
+    -   **Description**: Retrieve a list of all posts.
+    -   **Permissions**: Public.
+
+-   **Endpoint**: `/posts/{id}/`
+    -   **Description**: Retrieve a single post with its nested comments and replies.
+    -   **Permissions**: Public.
+
+-   **Endpoint**: `/replies/?comment={comment_id}`
+    -   **Description**: Retrieve all replies for a specific comment.
+    -   **Permissions**: Public.
+
+#### `PATCH` / `PUT` Requests
+
+-   **Endpoint**: `/posts/{id}/`, `/comments/{id}/`, `/replies/{id}/`
+    -   **Description**: Update a post, comment, or reply.
+    -   **Permissions**: Owner Only.
+
+#### `DELETE` Requests
+
+-   **Endpoint**: `/posts/{id}/`, `/comments/{id}/`, `/replies/{id}/`
+    -   **Description**: Delete a post, comment, or reply.
+    -   **Permissions**: Owner Only.
+
+---
+
+### 🛠️ `services` App: Service Requests & Reviews
+
+Manages the lifecycle of a service request, from creation to completion and review.
+
+#### `POST` Requests
+
+-   **Endpoint**: `/services/create/`
+    -   **Description**: A client creates a service request for a plumber.
+    -   **Permissions**: Client Only.
+    -   **Request Body**:
+        ```json
+        {
+          "receiver": 1,
+          "amount": 150.00
+        }
+        ```
+
+-   **Endpoint**: `/services/{id}/accept/`
+    -   **Description**: A plumber accepts a service request.
+    -   **Permissions**: Plumber (Receiver) Only.
+    -   **Request Body**: None.
+
+-   **Endpoint**: `/services/{id}/reject/`
+    -   **Description**: A plumber rejects a service request.
+    -   **Permissions**: Plumber (Receiver) Only.
+    -   **Request Body**: None.
+
+-   **Endpoint**: `/services/reviews/create/`
+    -   **Description**: A client creates a review for a completed service.
+    -   **Permissions**: Client (Sender) Only.
+    -   **Request Body**:
+        ```json
+        {
+          "service_request": 1,
+          "rating": 5,
+          "comment": "Excellent and professional service!"
+        }
+        ```
+
+#### `GET` Requests
+
+-   **Endpoint**: `/services/list/`
+    -   **Description**: List all services associated with the current user (both sent and received).
+    -   **Permissions**: Authenticated.
+
+-   **Endpoint**: `/services/{id}/`
+    -   **Description**: Retrieve details of a specific service request.
+    -   **Permissions**: Participant or Admin.
+
+-   **Endpoint**: `/services/plumber/{id}/reviews/`
+    -   **Description**: Get all reviews for a specific plumber.
+    -   **Permissions**: Public.
+
+-   **Endpoint**: `/services/plumber/{id}/rating/`
+    -   **Description**: Get the average rating and total review count for a plumber.
+    -   **Permissions**: Public.
+
+#### `PATCH` / `PUT` Requests
+
+-   **Endpoint**: `/services/{id}/update/`
+    -   **Description**: Update a service. Can be used by a plumber to mark a service as 'completed'.
+    -   **Permissions**: Participant or Admin.
+    -   **Request Body**:
+        ```json
+        {
+          "status": "completed"
+        }
+        ```
+
+---
+
+### リアルタイム `chats` & `chat_messages` Apps
+
+Handles real-time chat functionality via WebSockets and a REST API for history.
+
+#### WebSocket Endpoint
+
+-   **URL**: `ws://localhost:8001/ws/chat/{chat_id}/`
+-   **Description**: Establishes a persistent WebSocket connection for real-time, bidirectional messaging within a specific chat room. Messages are sent and received as JSON objects.
+
+#### REST API Endpoints
+
+##### `POST` Requests
+-   **Endpoint**: `/chats/`
+    -   **Description**: Create a new chat with a user or retrieve an existing one.
+    -   **Permissions**: Authenticated.
+    -   **Request Body**:
+        ```json
+        {
+          "receiver_id": 2
+        }
+        ```
+
+-   **Endpoint**: `/chat-messages/`
+    -   **Description**: Send a message to a chat. Can be used as a fallback if WebSocket is unavailable.
+    -   **Permissions**: Participant.
+    -   **Request Body** (`multipart/form-data` if image/file):
+        -   `chat`: 1
+        -   `content`: "Here is the photo of the issue."
+        -   `message_type`: "image"
+        -   `image`: (File upload)
+
+##### `GET` Requests
+-   **Endpoint**: `/chats/`
+    -   **Description**: List all chats for the authenticated user.
+    -   **Permissions**: Authenticated.
+
+-   **Endpoint**: `/chat-messages/?chat={chat_id}`
+    -   **Description**: Retrieve the message history for a specific chat.
+    -   **Permissions**: Participant.
+
+##### `PATCH` / `PUT` Requests
+-   **Endpoint**: `/chats/{id}/archive/`
+    -   **Description**: Toggles the `is_archived` status of a chat.
+    -   **Permissions**: Participant.
+
+-   **Endpoint**: `/chat-messages/mark_read/`
+    -   **Description**: Mark all messages in a chat as read.
+    -   **Permissions**: Participant.
+    -   **Request Body**:
+        ```json
+        {
+          "chat_id": 1
+        }
+        ```
+
+##### `DELETE` Requests
+-   **Endpoint**: `/chat-messages/{id}/`
+    -   **Description**: Soft-deletes a message (marks `is_deleted=true`).
+    -   **Permissions**: Sender Only.
