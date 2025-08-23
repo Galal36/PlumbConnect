@@ -446,7 +446,7 @@ Manages the lifecycle of a service request, from creation to completion and revi
 
 ---
 
-### リアルタイム `chats` & `chat_messages` Apps
+### `chats` & `chat_messages` Apps
 
 Handles real-time chat functionality via WebSockets and a REST API for history.
 
