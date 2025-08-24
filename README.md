@@ -7,7 +7,7 @@
   </a>
 </p>
 
-<h1 align="center">PlumbConnect: Full-Stack Service & Community Platform</h1>
+<h1 align="center">Plumby: Full-Stack Service & Community Platform</h1>
 
 <p align="center">
   A robust, full-stack application connecting clients with professional plumbers in Kuwait, featuring real-time chat, a community forum, an AI-powered content moderation system, and integrated payments with Stripe.
@@ -33,7 +33,7 @@
 
 ---
 
-**PlumbConnect** is a modern, full-stack web application designed to serve the Kuwaiti market by connecting clients with professional plumbers. Built with a powerful **Django** backend and a dynamic **React** frontend, the platform provides a seamless experience for finding, communicating with, and hiring plumbing experts. Beyond a simple service marketplace, it fosters a community through a social feed and an AI-moderated knowledge base.
+**Plumby** is a modern, full-stack web application designed to serve the Kuwaiti market by connecting clients with professional plumbers. Built with a powerful **Django** backend and a dynamic **React** frontend, the platform provides a seamless experience for finding, communicating with, and hiring plumbing experts. Beyond a simple service marketplace, it fosters a community through a social feed and an AI-moderated knowledge base.
 
 ## ✨ Key Features
 
