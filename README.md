@@ -5,7 +5,7 @@
   <a href="https://www.djangoproject.com/" target="_blank" rel="noreferrer">
     <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=44B78B" alt="Django"/>
   </a>
-</p>
+</p>.
 
 <h1 align="center">Plumby: Full-Stack Service & Community Platform</h1>
 
