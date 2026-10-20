@@ -5,7 +5,7 @@
   <a href="https://www.djangoproject.com/" target="_blank" rel="noreferrer">
     <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=44B78B" alt="Django"/>
   </a>
-</p>.
+</p>
 
 <h1 align="center">Plumby: Full-Stack Service & Community Platform</h1>
 
@@ -17,10 +17,10 @@
 
 <p align="center">
   <a href="#-key-features"><strong>Key Features</strong></a> ·
-  <a href="#-architecture-overview"><strong>Architecture</strong></a> ·
+  <a href="#architecture-overview"><strong>Architecture</strong></a> ·
   <a href="#-getting-started"><strong>Getting Started</strong></a> ·
-  <a href="#-api-documentation"><strong>API Guide</strong></a> ·
-  <a href="#-frontend-overview"><strong>Frontend</strong></a>
+  <a href="#api-documentation"><strong>API Guide</strong></a> ·
+  <a href="#frontend-react"><strong>Frontend</strong></a>
 </p>
 
 <p align="center">
@@ -37,16 +37,16 @@
 
 ## ✨ Key Features
 
--   **👥 Role-Based Access Control**: Differentiated experiences for **Clients**, **Plumbers**, and **Admins**.
--   **🛠️ Service Marketplace & Payment Flow**: Clients can find plumbers, request services, and pay an initial visit fee securely via **Stripe**. The final service cost is settled directly with the plumber.
--   **💬 Real-Time Chat**: A WebSocket-powered chat system using Django Channels allows for instant, direct communication.
--   **✍️ Community Forum**: A social feed where users can create posts, comment, and reply.
--   **🤖 AI-Powered Content Moderation**: Plumbers can publish articles which are automatically reviewed by the **Google Gemini API** for quality and safety before admin approval.
--   **🔐 Secure Authentication**: Robust JWT-based authentication with email verification and a secure password reset flow.
--   **📄 Comprehensive Profiles**: Detailed profiles for plumbers, showcasing their experience, reviews, and past work.
--   **🛡️ Reporting System**: Users can report inappropriate content for admin moderation.
+-   **Role-Based Access Control**: Differentiated experiences for **Clients**, **Plumbers**, and **Admins**.
+-   **Service Marketplace & Payment Flow**: Clients can find plumbers, request services, and pay an initial visit fee securely via **Stripe**. The final service cost is settled directly with the plumber.
+-   **Real-Time Chat**: A WebSocket-powered chat system using Django Channels allows for instant, direct communication.
+-   **Community Forum**: A social feed where users can create posts, comment, and reply.
+-   **AI-Powered Content Moderation**: Plumbers can publish articles which are automatically reviewed by the **Google Gemini API** for quality and safety before admin approval.
+-   **Secure Authentication**: Robust JWT-based authentication with email verification and a secure password reset flow.
+-   **Comprehensive Profiles**: Detailed profiles for plumbers, showcasing their experience, reviews, and past work.
+-   **Reporting System**: Users can report inappropriate content for admin moderation.
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 The application follows a decoupled, client-server architecture.
 
@@ -56,9 +56,7 @@ The application follows a decoupled, client-server architecture.
 -   **Authentication**: `djangorestframework-simplejwt`.
 -   **Real-time**: `django-channels` for WebSockets.
 -   **Database**: PostgreSQL.
--   <!-- NEW -->
-    **Payments**: Integrates with the **Stripe API** to handle the initial visit fee payment processing.
-    <!-- /NEW -->
+-   **Payments**: Integrates with the **Stripe API** to handle the initial visit fee payment processing.
 -   **AI Integration**: The `articles` app integrates with the Google Gemini API.
 -   **Key Apps**: `users`, `posts`, `articles`, `services`, `chats`, `reports`, and a new `payments` app to handle Stripe webhooks and logic.
 
@@ -67,9 +65,7 @@ The application follows a decoupled, client-server architecture.
 -   **Core Framework**: React 18 & Vite.
 -   **Language**: TypeScript.
 -   **State Management**: React Context API (`AuthContext`, `NotificationContext`).
--   <!-- NEW -->
-    **Payments UI**: Uses **Stripe.js** and **React Stripe.js** for a secure, PCI-compliant payment form (`Elements`, `CardElement`).
-    <!-- /NEW -->
+-   **Payments UI**: Uses **Stripe.js** and **React Stripe.js** for a secure, PCI-compliant payment form (`Elements`, `CardElement`).
 -   **UI**: `shadcn/ui` and `Tailwind CSS`.
 -   **Routing**: `react-router-dom`.
 -   **API Communication**: `fetch` API wrapped in dedicated service classes.
@@ -93,12 +89,9 @@ The application follows a decoupled, client-server architecture.
     GEMINI_API_KEY='your-google-gemini-api-key'
     EMAIL_HOST_USER='your-email@example.com'
     EMAIL_HOST_PASSWORD='your-email-password'
-    
-    # <!-- NEW -->
     STRIPE_SECRET_KEY='sk_test_...'
     STRIPE_WEBHOOK_SECRET='whsec_...'
     VISIT_FEE_AMOUNT=500 # Amount in the smallest currency unit (e.g., 500 = 5.00 KWD)
-    # <!-- /NEW -->
     ```
 5.  **Database Migrations**: `python manage.py migrate`
 6.  **Run Server**: `python manage.py runserver`
@@ -107,15 +100,13 @@ The application follows a decoupled, client-server architecture.
 
 1.  **Navigate**: `cd ../frontend`
 2.  **Install Dependencies**: `npm install`
-3.  <!-- NEW -->
-    **Configure Environment Variables**: Create a `.env.local` file and add your Stripe publishable key:
+3.  **Configure Environment Variables**: Create a `.env.local` file and add your Stripe publishable key:
     ```env
     VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
     ```
-    <!-- /NEW -->
 4.  **Run Server**: `npm run dev`
 
-## 🔧 API Documentation
+## API Documentation
 
 This guide details the available endpoints, organized by application and HTTP method.
 
@@ -123,24 +114,23 @@ This guide details the available endpoints, organized by application and HTTP me
 
 ---
 
-### 👤 `users` App: Authentication & User Management
+### `users` App: Authentication & User Management
 *(No changes in this section. Endpoints for login, registration, profiles, etc., remain the same.)*
 
 ---
 
-### ✍️ `articles` App: AI-Reviewed Knowledge Base
+### `articles` App: AI-Reviewed Knowledge Base
 *(No changes in this section. Endpoints for creating, reviewing, and approving articles remain the same.)*
 
 ---
 
-### 💬 `posts` App: Community Forum
+### `posts` App: Community Forum
 *(No changes in this section. Endpoints for posts, comments, and likes remain the same.)*
 
 ---
 
-### 🛠️ `services` App: Service Requests & Reviews
+### `services` App: Service Requests & Reviews
 
-<!-- UPDATED -->
 Manages the lifecycle of a service request, now including the initial payment step.
 
 #### `POST` Requests
@@ -215,11 +205,10 @@ Manages the lifecycle of a service request, now including the initial payment st
           "status": "completed"
         }
         ```
-<!-- /UPDATED -->
 
 ---
 
-### <!-- NEW --> 💳 `payments` App: Stripe Integration
+### `payments` App: Stripe Integration
 
 Handles payment processing and webhooks.
 
@@ -229,7 +218,6 @@ Handles payment processing and webhooks.
     -   **Description**: **[For Stripe Use Only]** Listens for events from Stripe, such as `payment_intent.succeeded`. When a successful payment for a visit fee is detected, this endpoint updates the corresponding service request's status from `pending_payment` to `pending_acceptance`.
     -   **Permissions**: Public (Secured by Stripe webhook signature).
     -   **Request Body**: Sent by Stripe.
-<!-- /NEW -->
 
 ---
 
