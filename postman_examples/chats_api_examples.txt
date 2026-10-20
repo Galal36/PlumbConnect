@@ -123,7 +123,6 @@
 
 # 6. Search Chats (البحث في المحادثات)
 # Description: Search chats by sender/receiver name.
->>>>>>> plumb_
 # Method: GET
 # URL: http://localhost:8000/api/chats/search/?q=علي
 # Example Response (Status: 200 OK):

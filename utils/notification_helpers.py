@@ -10,7 +10,6 @@ from chat_messages.models import Message # تم إلغاء التعليق
 from complaints.models import Complaint # تم إلغاء التعليق
 
 
->>>>>>> plumb_
 def create_notification(user, title, content, notification_type='system', action_url=None, related_object=None, is_important=False, request=None):
     """Helper function to create notifications"""
     content_type = None
@@ -20,15 +19,6 @@ def create_notification(user, title, content, notification_type='system', action
         object_id = related_object.id
 
     if action_url is None and related_object and request:
-<<<<<<< HEAD
-        # توليد action_url بناءً على نوع الكائن
-        if isinstance(related_object, Notification):
-            action_url = get_full_api_url(request, 'notifications:notification-detail', pk=related_object.id)
-        elif hasattr(related_object, 'chat'):  # للرسائل
-            action_url = get_full_api_url(request, 'chat_messages:message-detail', pk=related_object.id)
-        elif hasattr(related_object, 'from_user'):  # للشكاوى
-            action_url = get_full_api_url(request, 'complaints:complaint-detail', pk=related_object.id)
-        elif hasattr(related_object, 'sender'):  # للمحادثات
         # توليد action_url بناءً على نوع الكائن باستخدام isinstance
         if isinstance(related_object, Notification):
             action_url = get_full_api_url(request, 'notifications:notification-detail', pk=related_object.id)
@@ -37,7 +27,6 @@ def create_notification(user, title, content, notification_type='system', action
         elif isinstance(related_object, Complaint): # تم تفعيل هذا الشرط
             action_url = get_full_api_url(request, 'complaints:complaint-detail', pk=related_object.id)
         elif isinstance(related_object, Chat):
->>>>>>> plumb_
             action_url = get_full_api_url(request, 'chats:chat-detail', pk=related_object.id)
 
     notification = Notification.objects.create(

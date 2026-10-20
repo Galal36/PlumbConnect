@@ -83,10 +83,8 @@
 # 3. Mark Message as Read (تحديد رسالة كمقروءة)
 # Description: Mark a specific message as read. Only the receiver can mark a message as read.
 # Method: PATCH
-# URL: http://localhost:8000/api/chat-messages/1/messages/1/mark-as-read/
 # URL: http://localhost:8000/api/chat-messages/<message_id>/mark-as-read/
 # Example: http://localhost:8000/api/chat-messages/1/mark-as-read/
->>>>>>> plumb_
 # Request Body: (Empty or {})
 # Example Response (Status: 200 OK):
 # {
